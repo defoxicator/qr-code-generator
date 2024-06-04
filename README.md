@@ -12,3 +12,4 @@ In this project I am trying to write my own QR code generator:
 
 ## Useful links:
 [QR Code step by step by Nayuki](https://www.nayuki.io/page/creating-a-qr-code-step-by-step)
+[Wikipedia Page](https://en.wikipedia.org/wiki/QR_code)
