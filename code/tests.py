@@ -1,7 +1,6 @@
 import unittest
 from . import app
 
-
 # test class here
 # test cases here
 
