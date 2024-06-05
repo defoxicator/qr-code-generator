@@ -1,7 +1,23 @@
+import unicodedata
+
 # STEP 0.
-# Analyze Unicode characters 
-# Check if each character can be encoded as numeric, alphanumeric,
-# byte or kanji - select the one that makes most sense
+# Encode characters in bytes
+
+text_input:str=input("Please insert text that shouldbe converted to QR Code:\n> ")
+
+def analyze_input(text_input=text_input):
+    
+# Encode unicode characters to binary
+    analyzed_text:list=list()
+
+    for character in text_input:
+        binary:str=bin(ord(character))[2:]
+
+        # make it in packets of 8 bits
+
+        analyzed_text.append({character:binary})
+
+    return(analyzed_text)
 
 # STEP 1.
 # Create data segment
@@ -37,3 +53,5 @@
 # Zig-zag pattern for generating the QR code is starting from bottom 
 # right towards top and then to the left
 
+if __name__ == "__main__":
+    print(analyze_input())
