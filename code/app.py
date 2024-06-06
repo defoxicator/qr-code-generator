@@ -8,14 +8,14 @@ import unicodedata
 
 class Input:
     def __init__(self):
-        self.text_input:str=input("Please insert text that shouldbe converted to QR Code:\n> ")
+        self.text_input:str=input('Please insert text that shouldbe converted to QR Code:\n> ')
         
     def analyze_input(self):
         
 # Encode unicode characters to binary
         analyzed_text:list=list()
 
-        for character in text_input:
+        for character in self.text_input:
             binary:str=bin(ord(character))[2:]
 
 # Make it in packets of 8 bits
@@ -56,17 +56,73 @@ class QrCode:
             self.row_boundaries:list=[]
 
             for row in range(self.size[1]):
-                self.row_boundaries.append("@")
+                self.row_boundaries.append('@')
                         
             self.boundaries.append(self.row_boundaries)
 
 # Timing pattern
 # Row 6, column 6
     def draw_timing_pattern(self):
-        for row in self.size:
-            pass
+# Row timing pattern
+        self.row_timing:list=[]
+        for i in range(len(self.boundaries[5])):
+            if i%2==0:
+                self.row_timing.append('#')
+            else:
+                self.row_timing.append(' ')
+
+        self.row_timing.reverse()
+        self.boundaries[6]=self.row_timing
+
+# Column timing pattern
+        self.col_timing:list=[]
+        for i in range(len(self.boundaries[5])):
+            if i%2==0:
+                self.col_timing.append('#')
+            else:
+                self.col_timing.append(' ')
+
+        for i in range(len(self.boundaries)):
+            self.boundaries[i][6]=self.col_timing[i]
+
+    def one_finding_pattern(self, side:str)->list:
+        self.finding_pattern:list=[
+            ['#', '#', '#', '#', '#', '#', '#'],
+            ['#', ' ', ' ', ' ', ' ', ' ', '#'],
+            ['#', ' ', '#', '#', '#', ' ', '#'],
+            ['#', ' ', '#', '#', '#', ' ', '#'],
+            ['#', ' ', '#', '#', '#', ' ', '#'],
+            ['#', ' ', '#', '#', '#', ' ', '#'],
+            ['#', ' ', ' ', ' ', ' ', ' ', '#'],            
+            ['#', '#', '#', '#', '#', '#', '#']
+        ]
+
+        self.padding:list=[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+
+        if side=='top_left':
+            for i in range(len(self.finding_pattern)):
+                self.finding_pattern[i].append(self.padding[i])
+            self.finding_pattern.insert(len(self.finding_pattern), self.padding)
+        elif side=='top_right':
+            for i in range(len(self.finding_pattern)):
+                self.finding_pattern[-i].append(self.padding[i])
+            self.finding_pattern.insert(len(self.finding_pattern), self.padding)
+        elif side=='bottom_left':
+            for i in range(len(self.finding_pattern)):
+                self.finding_pattern[i].append(self.padding[i])
+            self.finding_pattern.insert(0, self.padding)
+
+        return self.finding_pattern
+    
+# Combine finding patterns
+    def draw_finding_pattern(self):
+        print('top_left\n',self.one_finding_pattern(side='top_left'))
+        print('top_right\n',self.one_finding_pattern(side='top_right'))
+        print('bottom_left\n',self.one_finding_pattern(side='bottom_left'))
+             
 
     def print_qr_code(self):
+        self.draw_timing_pattern()
         for col in self.boundaries:
             print(col)
 
@@ -90,5 +146,5 @@ class QrCode:
 # Zig-zag pattern for generating the QR code is starting from bottom 
 # right towards top and then to the left
 
-if __name__ == "__main__":
-    QrCode().print_qr_code()
+if __name__ == '__main__':
+    QrCode().draw_finding_pattern()
