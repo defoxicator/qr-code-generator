@@ -8,7 +8,8 @@ import unicodedata
 
 class Input:
     def __init__(self):
-        self.text_input:str=input('Please insert text that shouldbe converted to QR Code:\n> ')
+        self.text_input:str=input('Please insert text that should be\
+                                  converted to QR Code:\n> ')
         
     def analyze_input(self):
         
@@ -48,10 +49,12 @@ class Version:
 
 class QrCode:
     def __init__(self):
-# Size in col, rows
+        
+        # Size in (columns, rows)
         self.size=(21,21)
         self.boundaries:list=[]
-    # Boundaries
+        
+        # Boundaries
         for col in range(self.size[0]):
             self.row_boundaries:list=[]
 
@@ -60,10 +63,11 @@ class QrCode:
                         
             self.boundaries.append(self.row_boundaries)
 
-# Timing pattern
-# Row 6, column 6
+        # Timing pattern
+        # Row 6, column 6
     def draw_timing_pattern(self):
-# Row timing pattern
+        
+        # Row timing pattern
         self.row_timing:list=[]
         for i in range(len(self.boundaries[5])):
             if i%2==0:
@@ -74,7 +78,7 @@ class QrCode:
         self.row_timing.reverse()
         self.boundaries[6]=self.row_timing
 
-# Column timing pattern
+        # Column timing pattern
         self.col_timing:list=[]
         for i in range(len(self.boundaries[5])):
             if i%2==0:
@@ -85,7 +89,7 @@ class QrCode:
         for i in range(len(self.boundaries)):
             self.boundaries[i][6]=self.col_timing[i]
 
-    def one_finding_pattern(self, side:str)->list:
+    def one_finding_pattern(self, vertical:str, horizontal:str)->list:
         self.finding_pattern:list=[
             ['#', '#', '#', '#', '#', '#', '#'],
             ['#', ' ', ' ', ' ', ' ', ' ', '#'],
@@ -97,35 +101,40 @@ class QrCode:
             ['#', '#', '#', '#', '#', '#', '#']
         ]
 
-        self.padding:list=[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+        padding:list=[' ', ' ', ' ', ' ', ' ', ' ', ' ']
 
-        if side=='top_left':
-            for i in range(len(self.finding_pattern)):
-                self.finding_pattern[i].append(self.padding[i])
-            self.finding_pattern.insert(len(self.finding_pattern), self.padding)
-        elif side=='top_right':
-            for i in range(len(self.finding_pattern)):
-                self.finding_pattern[-i].append(self.padding[i])
-            self.finding_pattern.insert(len(self.finding_pattern), self.padding)
-        elif side=='bottom_left':
-            for i in range(len(self.finding_pattern)):
-                self.finding_pattern[i].append(self.padding[i])
-            self.finding_pattern.insert(0, self.padding)
+        # Vertical padding        
+        if vertical=='top':
+            vertical_insert:int=len(self.finding_pattern)
+        elif vertical=='bottom':
+            vertical_insert:int=0
+
+        self.finding_pattern.insert(vertical_insert, padding)
+
+        # Horizontal padding
+        if horizontal=='left':
+            horizonal_insert:int=len(self.finding_pattern[0])
+        elif horizontal=='right':
+            horizonal_insert:int=0
+
+        for i in range(len(self.finding_pattern)):
+            self.finding_pattern[i].insert(horizonal_insert, padding[0])
 
         return self.finding_pattern
     
 # Combine finding patterns
     def draw_finding_pattern(self):
-        print('top_left\n',self.one_finding_pattern(side='top_left'))
-        print('top_right\n',self.one_finding_pattern(side='top_right'))
-        print('bottom_left\n',self.one_finding_pattern(side='bottom_left'))
-             
+        print('top_left\n',self.one_finding_pattern(vertical='top',
+                                                    horizontal='left'))
+        print('top_right\n',self.one_finding_pattern(vertical='top',
+                                                     horizontal='right'))
+        print('bottom_right\n',self.one_finding_pattern(vertical='bottom',
+                                                        horizontal='right'))
 
     def print_qr_code(self):
         self.draw_timing_pattern()
         for col in self.boundaries:
             print(col)
-
 
 # STEP 6.
 # Draw codewords and remainder
