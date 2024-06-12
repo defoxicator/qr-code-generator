@@ -65,8 +65,8 @@ class QrCode:
 
         # Timing pattern
         # Row 6, column 6
+
     def draw_timing_pattern(self):
-        
         # Row timing pattern
         self.row_timing:list=[]
         for i in range(len(self.boundaries[5])):
@@ -93,7 +93,6 @@ class QrCode:
         self.finding_pattern:list=[
             ['#', '#', '#', '#', '#', '#', '#'],
             ['#', ' ', ' ', ' ', ' ', ' ', '#'],
-            ['#', ' ', '#', '#', '#', ' ', '#'],
             ['#', ' ', '#', '#', '#', ' ', '#'],
             ['#', ' ', '#', '#', '#', ' ', '#'],
             ['#', ' ', '#', '#', '#', ' ', '#'],
@@ -124,17 +123,31 @@ class QrCode:
     
 # Combine finding patterns
     def draw_finding_pattern(self):
-        print('top_left\n',self.one_finding_pattern(vertical='top',
-                                                    horizontal='left'))
-        print('top_right\n',self.one_finding_pattern(vertical='top',
-                                                     horizontal='right'))
-        print('bottom_right\n',self.one_finding_pattern(vertical='bottom',
-                                                        horizontal='right'))
+        top_left=self.one_finding_pattern(vertical='top', horizontal='left')
+        top_right=self.one_finding_pattern(vertical='top', horizontal='right')
+        bottom_left=self.one_finding_pattern(vertical='bottom', horizontal='left')
+        finding_patterns:dict={'top_left':top_left,
+                               'top_right':top_right,
+                               'bottom_left':bottom_left}
+
+        for name, pattern in finding_patterns.items():
+            for row in range(len(pattern)):
+                for column in range(len(pattern[0])):
+                    self.boundaries[row-len(pattern) if name =='bottom_left'
+                                    else row][column-len(pattern)
+                                    if name=='top_right'
+                                    else column]=pattern[row][column]
 
     def print_qr_code(self):
+        qr_code:str=''
         self.draw_timing_pattern()
-        for col in self.boundaries:
-            print(col)
+        self.draw_finding_pattern()
+        for row in range(len(self.boundaries)):
+            for column in self.boundaries[row]:
+                qr_code=qr_code+' '+column
+            qr_code=qr_code+'\n'     
+
+        print(qr_code)           
 
 # STEP 6.
 # Draw codewords and remainder
@@ -156,4 +169,4 @@ class QrCode:
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    QrCode().draw_finding_pattern()
+    QrCode().print_qr_code()
