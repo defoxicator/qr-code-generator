@@ -47,13 +47,12 @@ class Version:
 # STEP 5.
 # Draw fixed patterns
 
-class QrCode:
-    def __init__(self):
+class qrCode:
+    def __init__(self, size:tuple=(21,21)):
+        self.size=size
         
-        # Size in (columns, rows)
-        self.size=(21,21)
+    def generate_boundaries(self):
         self.boundaries:list=[]
-        
         # Boundaries
         for col in range(self.size[0]):
             self.row_boundaries:list=[]
@@ -62,11 +61,15 @@ class QrCode:
                 self.row_boundaries.append('@')
                         
             self.boundaries.append(self.row_boundaries)
+        
+        return self.boundaries
 
         # Timing pattern
         # Row 6, column 6
 
     def draw_timing_pattern(self):
+
+        self.boundaries=self.generate_boundaries()
         # Row timing pattern
         self.row_timing:list=[]
         for i in range(len(self.boundaries[5])):
@@ -88,6 +91,8 @@ class QrCode:
 
         for i in range(len(self.boundaries)):
             self.boundaries[i][6]=self.col_timing[i]
+
+        return self.boundaries
 
     def one_finding_pattern(self, vertical:str, horizontal:str)->list:
         self.finding_pattern:list=[
@@ -123,6 +128,7 @@ class QrCode:
     
 # Combine finding patterns
     def draw_finding_pattern(self):
+
         top_left=self.one_finding_pattern(vertical='top', horizontal='left')
         top_right=self.one_finding_pattern(vertical='top', horizontal='right')
         bottom_left=self.one_finding_pattern(vertical='bottom', horizontal='left')
@@ -169,4 +175,4 @@ class QrCode:
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    QrCode().print_qr_code()
+    qrCode().print_qr_code()
