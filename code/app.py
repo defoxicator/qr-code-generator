@@ -49,7 +49,8 @@ class Version:
 
 class qrCode:
     def __init__(self, size:tuple=(21,21)):
-        self.size=size
+        # Size = (rows, columns)
+        self.size=size 
         
     def generate_boundaries(self):
         self.boundaries:list=[]
@@ -66,6 +67,22 @@ class qrCode:
 
         # Timing pattern
         # Row 6, column 6
+
+    def timing_pattern(self, direction:str):
+        self.row_timing:list=[]
+        
+        if direction=='row':
+            length=self.size[0]
+        elif direction=='column':
+            length=self.size[1]
+
+        for i in range(length):
+            if i%2==0:
+                self.row_timing.append('#')
+            else:
+                self.row_timing.append(' ')
+        
+        return self.row_timing
 
     def draw_timing_pattern(self):
 
@@ -144,6 +161,11 @@ class qrCode:
                                     if name=='top_right'
                                     else column]=pattern[row][column]
 
+    def combine_qr_code(self):
+        self.generate_boundaries()
+        self.draw_timing_pattern()
+        self.draw_finding_pattern()
+
     def print_qr_code(self):
         qr_code:str=''
         self.draw_timing_pattern()
@@ -175,4 +197,4 @@ class qrCode:
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    qrCode().print_qr_code()
+    qrCode().timing_pattern()
