@@ -157,12 +157,12 @@ class qrCode:
 
         return structure
     
-    def combine_qr_code(self, method=generate_boundaries):
-        combined=method
+    def combine_qr_code(self):
+        combined=self.generate_boundaries()
         self.draw_timing_pattern(combined)
         self.draw_finding_pattern(combined)
 
-        return 
+        return combined
 
     def print_qr_code(self):
         combined=self.combine_qr_code()
@@ -194,4 +194,4 @@ class qrCode:
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(qrCode().draw_finding_pattern())
+    qrCode().print_qr_code()
