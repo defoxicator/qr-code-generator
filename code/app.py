@@ -84,32 +84,39 @@ class qrCode:
         
         return self.row_timing
 
-    def draw_timing_pattern(self):
+    def draw_timing_pattern(self, method=generate_boundaries):
+        structure=method(self)
+        row=self.timing_pattern(direction='row')
+        column=self.timing_pattern(direction='column')
+        
+        for i in range(len(column)):
+            structure[i][6]=column[i]
+        
+        structure[6]=row
 
-        self.boundaries=self.generate_boundaries()
-        # Row timing pattern
-        self.row_timing:list=[]
-        for i in range(len(self.boundaries[5])):
-            if i%2==0:
-                self.row_timing.append('#')
-            else:
-                self.row_timing.append(' ')
+        # # Row timing pattern
+        # self.row_timing:list=[]
+        # for i in range(len(self.boundaries[5])):
+        #     if i%2==0:
+        #         self.row_timing.append('#')
+        #     else:
+        #         self.row_timing.append(' ')
 
-        self.row_timing.reverse()
-        self.boundaries[6]=self.row_timing
+        # self.row_timing.reverse()
+        # self.boundaries[6]=self.row_timing
 
-        # Column timing pattern
-        self.col_timing:list=[]
-        for i in range(len(self.boundaries[5])):
-            if i%2==0:
-                self.col_timing.append('#')
-            else:
-                self.col_timing.append(' ')
+        # # Column timing pattern
+        # self.col_timing:list=[]
+        # for i in range(len(self.boundaries[5])):
+        #     if i%2==0:
+        #         self.col_timing.append('#')
+        #     else:
+        #         self.col_timing.append(' ')
 
-        for i in range(len(self.boundaries)):
-            self.boundaries[i][6]=self.col_timing[i]
+        # for i in range(len(self.boundaries)):
+        #     self.boundaries[i][6]=self.col_timing[i]
 
-        return self.boundaries
+        return structure
 
     def one_finding_pattern(self, vertical:str, horizontal:str)->list:
         self.finding_pattern:list=[
@@ -167,7 +174,7 @@ class qrCode:
     
     def combine_qr_code(self):
         combined=self.generate_boundaries()
-        self.draw_timing_pattern()
+        self.draw_timing_pattern(combined)
         self.draw_finding_pattern()
 
     def print_qr_code(self):
@@ -201,4 +208,4 @@ class qrCode:
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(qrCode().print_qr_code())
+    print(qrCode().draw_timing_pattern())
