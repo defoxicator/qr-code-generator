@@ -34,9 +34,9 @@ STEP 8.
 Find penalty patterns.
 
 STEP 9.
-Calculate penalty points, select best mask.
-QR code could be displayed in terminal using # and SPACEs.
-Zig-zag pattern for generating the QR code is starting from bottom  right towards top and then to the left.
+Calculate penalty points, select best mask.  
+QR code could be displayed in terminal using # and SPACEs.  
+Zig-zag pattern for generating the QR code is starting from bottom  right towards top and then to the left.  
 
 ## TODO:
 - [ ] Incorporate automated testing in the project
@@ -46,6 +46,6 @@ Zig-zag pattern for generating the QR code is starting from bottom  right toward
 - [ ] Prepare a GUI (web / desktop)
 
 ## Useful links:
-[QR Code step by step by Nayuki](https://www.nayuki.io/page/creating-a-qr-code-step-by-step)
-[Wikipedia Page](https://en.wikipedia.org/wiki/QR_code)
-[Unicode to Binary Converter](https://onlinetools.com/unicode/convert-unicode-to-binary)
+[QR Code step by step by Nayuki](https://www.nayuki.io/page/creating-a-qr-code-step-by-step)  
+[Wikipedia Page](https://en.wikipedia.org/wiki/QR_code)  
+[Unicode to Binary Converter](https://onlinetools.com/unicode/convert-unicode-to-binary)  
