@@ -155,6 +155,9 @@ class layout:
 
         return structure
     
+    def draw_dummy_format_bits(self, method_input=generate_boundaries):
+        
+
     # Combine the whole layout of QR Code before adding meaningful data
     # to it
     def combine_qr_code_layout(self):
