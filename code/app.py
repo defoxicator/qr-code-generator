@@ -7,25 +7,27 @@ import unicodedata
 # Create data segment
 
 class userInput:
-    def __init__(self):
-        self.text_input:str=input('Please insert text that should be\
-                                  converted to QR Code:\n> ')
+    def __init__(self, text_input:str=None):
         
+        if text_input is None:
+            self.text_input=input('Please insert text that should be converted to QR Code:\n> ')
+        else:
+            self.text_input=text_input
+
     def analyze_input(self):
-        
-# Encode unicode characters to binary
         analyzed_text:list=list()
 
+        # Encode unicode characters to binary
         for character in self.text_input:
             binary:str=bin(ord(character))[2:]
 
-# Make it in packets of 8 bits
+            # Make it in packets of 8 bits
             while len(binary) < 8:
                 binary='0'+binary
 
             analyzed_text.append({character:binary})
 
-        return(analyzed_text)
+        return analyzed_text
 
 # STEP 2.
 # Fit to version number
@@ -188,3 +190,4 @@ class layout:
 
 if __name__ == '__main__':
     layout().print_qr_code_layout()
+    print(userInput().analyze_input())

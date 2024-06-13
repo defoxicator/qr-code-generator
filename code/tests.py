@@ -1,6 +1,27 @@
 import unittest
 import app
 
+class userInputTest(unittest.TestCase):
+    def test_analyze_input(self):
+        actual=app.userInput(text_input='Hello world!123').analyze_input()
+        expected=[{'H':'01001000'},
+                  {'e':'01100101'},
+                  {'l':'01101100'},
+                  {'l':'01101100'},
+                  {'o':'01101111'},
+                  {' ':'00100000'},
+                  {'w':'01110111'},
+                  {'o':'01101111'},
+                  {'r':'01110010'},
+                  {'l':'01101100'},
+                  {'d':'01100100'},
+                  {'!':'00100001'},
+                  {'1':'00110001'},
+                  {'2':'00110010'},
+                  {'3':'00110011'}]
+
+        self.assertEqual(actual, expected)
+
 class layoutTest(unittest.TestCase):
     def test_boundaries(self):
         actual=app.layout(size=21).generate_boundaries()
