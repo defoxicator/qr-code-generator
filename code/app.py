@@ -144,7 +144,9 @@ class qrCode:
         return self.finding_pattern
     
 # Combine finding patterns
-    def draw_finding_pattern(self):
+    def draw_finding_pattern(self, method=generate_boundaries):
+
+        structure=method(self)
 
         top_left=self.one_finding_pattern(vertical='top', horizontal='left')
         top_right=self.one_finding_pattern(vertical='top', horizontal='right')
@@ -156,13 +158,15 @@ class qrCode:
         for name, pattern in finding_patterns.items():
             for row in range(len(pattern)):
                 for column in range(len(pattern[0])):
-                    self.boundaries[row-len(pattern) if name =='bottom_left'
+                    structure[row-len(pattern) if name =='bottom_left'
                                     else row][column-len(pattern)
                                     if name=='top_right'
                                     else column]=pattern[row][column]
 
+        return structure
+    
     def combine_qr_code(self):
-        self.generate_boundaries()
+        combined=self.generate_boundaries()
         self.draw_timing_pattern()
         self.draw_finding_pattern()
 
@@ -197,4 +201,4 @@ class qrCode:
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    qrCode().timing_pattern()
+    print(qrCode().print_qr_code())
