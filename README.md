@@ -47,7 +47,5 @@ Zig-zag pattern for generating the QR code is starting from bottom  right toward
 
 ## Useful links:
 [QR Code step by step by Nayuki](https://www.nayuki.io/page/creating-a-qr-code-step-by-step)
-
 [Wikipedia Page](https://en.wikipedia.org/wiki/QR_code)
-
 [Unicode to Binary Converter](https://onlinetools.com/unicode/convert-unicode-to-binary)
