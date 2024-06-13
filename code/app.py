@@ -50,6 +50,15 @@ class layout:
         # Size is depending on a QR Code version - for simplicity now I
         # will only use version 1 that is 21 x 21
         
+    # Function to check if argument is callable
+    def is_callable(self, method_input):
+        if callable(method_input):
+            structure=method_input(self)
+        else:
+            structure=method_input
+
+        return structure
+    
     def generate_boundaries(self):
         self.boundaries:list=[]
         
@@ -81,10 +90,7 @@ class layout:
         pattern_template=self.timing_pattern()
         
         # Check due to passing method as argument
-        if callable(method_input):
-            structure=method_input(self)
-        else:
-            structure=method_input
+        structure=self.is_callable(method_input=method_input)
         
         # Drawing timing patterns using template
         for i in range(len(pattern_template)):
@@ -139,10 +145,7 @@ class layout:
                                'bottom_left':bottom_left}
 
         # Check due to passing method as argument
-        if callable(method_input):
-            structure=method_input(self)
-        else:
-            structure=method_input
+        structure=self.is_callable(method_input=method_input)
             
         # Dictionary is used to prevent multiple for loop blocks
         for name, pattern in finding_patterns.items():
@@ -156,7 +159,10 @@ class layout:
         return structure
     
     def draw_dummy_format_bits(self, method_input=generate_boundaries):
+        # Check due to passing method as argument
+        structure=self.is_callable(method_input=method_input)
         
+        return structure
 
     # Combine the whole layout of QR Code before adding meaningful data
     # to it
