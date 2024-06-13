@@ -17,7 +17,8 @@ converted to QR Code (max 17 characters):\n> ')
         else:
             self.text_input=text_input
 
-    def analyze_input(self):
+    # As of now only binary encoding will be used
+    def analyze_input(self, encoding:str='binary'):
         analyzed_text:list=list()
 
         # Encode unicode characters to binary
