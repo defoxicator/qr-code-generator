@@ -38,15 +38,6 @@ class Version:
         version_10_26:dict={156:20}
         version_27_40:dict={156:20}
 
-# STEP 3.
-# Concatenate segments, add padding, make codewords
-
-# STEP 4.
-# Split blocks, add ECC, interleave
-
-# STEP 5.
-# Draw fixed patterns
-
 class layout:
     def __init__(self, size:tuple=(21,21)):
         # Size = (rows, columns)
@@ -54,7 +45,8 @@ class layout:
         
     def generate_boundaries(self):
         self.boundaries:list=[]
-        # Boundaries
+        
+        # Set boundaries for the code
         for col in range(self.size[0]):
             self.row_boundaries:list=[]
 
@@ -65,12 +57,11 @@ class layout:
         
         return self.boundaries
 
-        # Timing pattern
-        # Row 6, column 6
-
+    # Prepare lists that will be used as timing pattern template
     def timing_pattern(self, direction:str):
         self.row_timing:list=[]
         
+        # QR Codes are square... I will remove that part
         if direction=='row':
             length=self.size[0]
         elif direction=='column':
@@ -84,15 +75,18 @@ class layout:
         
         return self.row_timing
 
+    # Combine timing patterns from template
     def draw_timing_pattern(self, method_input=generate_boundaries):
+        row=self.timing_pattern(direction='row')
+        column=self.timing_pattern(direction='column')
+        
+        # Check due to passing method as argument
         if callable(method_input):
             structure=method_input(self)
         else:
             structure=method_input
         
-        row=self.timing_pattern(direction='row')
-        column=self.timing_pattern(direction='column')
-        
+        # Drawing timing patterns using template
         for i in range(len(column)):
             structure[i][6]=column[i]
         
@@ -100,7 +94,10 @@ class layout:
 
         return structure
 
+    # Create finding patterns, one for each corner
     def one_finding_pattern(self, vertical:str, horizontal:str)->list:
+        # This part is not changing no matter the QR Code size, so
+        # is being implemented as a predefined list
         self.finding_pattern:list=[
             ['#', '#', '#', '#', '#', '#', '#'],
             ['#', ' ', ' ', ' ', ' ', ' ', '#'],
@@ -110,7 +107,6 @@ class layout:
             ['#', ' ', ' ', ' ', ' ', ' ', '#'],            
             ['#', '#', '#', '#', '#', '#', '#']
         ]
-
         padding:list=[' ', ' ', ' ', ' ', ' ', ' ', ' ']
 
         # Vertical padding        
@@ -132,21 +128,23 @@ class layout:
 
         return self.finding_pattern
     
-# Combine finding patterns
+    # Combine finding patterns
     def draw_finding_pattern(self, method_input=generate_boundaries):
-        
+        top_left=self.one_finding_pattern(vertical='top', horizontal='left')
+        top_right=self.one_finding_pattern(vertical='top', horizontal='right')
+        bottom_left=self.one_finding_pattern(vertical='bottom',
+                                             horizontal='left')
+        finding_patterns:dict={'top_left':top_left,
+                               'top_right':top_right,
+                               'bottom_left':bottom_left}
+
+        # Check due to passing method as argument
         if callable(method_input):
             structure=method_input(self)
         else:
             structure=method_input
             
-        top_left=self.one_finding_pattern(vertical='top', horizontal='left')
-        top_right=self.one_finding_pattern(vertical='top', horizontal='right')
-        bottom_left=self.one_finding_pattern(vertical='bottom', horizontal='left')
-        finding_patterns:dict={'top_left':top_left,
-                               'top_right':top_right,
-                               'bottom_left':bottom_left}
-
+        # Dictionary is used to prevent multiple for loop blocks
         for name, pattern in finding_patterns.items():
             for row in range(len(pattern)):
                 for column in range(len(pattern[0])):
@@ -157,6 +155,8 @@ class layout:
 
         return structure
     
+    # Combine the whole layout of QR Code before adding meaningful data
+    # to it
     def combine_qr_code_layout(self):
         combined=self.generate_boundaries()
         self.draw_timing_pattern(combined)
@@ -164,6 +164,7 @@ class layout:
 
         return combined
 
+    # Print the empty QR Code
     def print_qr_code_layout(self):
         combined=self.combine_qr_code_layout()
         qr_code:str=''
