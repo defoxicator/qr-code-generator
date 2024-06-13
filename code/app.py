@@ -32,8 +32,8 @@ converted to QR Code (max 17 characters):\n> ')
 
         return analyzed_text
 
-    def input_to_data_bits(self):
-        input_bits=self.analyze_input()
+    def input_to_data_bits(self, method_input=analyze_input):
+        input_bits=method_input(self)
         data_bits:str=''
 
         for character in input_bits:
@@ -41,8 +41,6 @@ converted to QR Code (max 17 characters):\n> ')
                 data_bits+=bit
 
         return data_bits
-
-    
 
 class layout:
     def __init__(self, size:int=21):
@@ -196,5 +194,4 @@ class layout:
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    layout().print_qr_code_layout()
-    print(userInput().analyze_input())
+    print(userInput().input_to_data_bits())
