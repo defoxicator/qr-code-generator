@@ -10,7 +10,10 @@ class userInput:
     def __init__(self, text_input:str=None):
         
         if text_input is None:
-            self.text_input=input('Please insert text that should be converted to QR Code:\n> ')
+            self.text_input=input('Please insert text that should be\
+converted to QR Code (max 17 characters):\n> ')
+            if len(self.text_input) > 17:
+                raise Exception('Sorry, no more characters than 17.')
         else:
             self.text_input=text_input
 
@@ -39,12 +42,14 @@ class userInput:
 
         return data_bits
 
-# STEP 2.
-# Fit to version number
+    
 
 class layout:
     def __init__(self, size:int=21):
         self.size=size 
+
+        # Size is depending on a QR Code version - for simplicity now I
+        # will only use version 1 that is 21 x 21
         
     def generate_boundaries(self):
         self.boundaries:list=[]
