@@ -3,7 +3,7 @@ import app
 
 class layoutTest(unittest.TestCase):
     def test_boundaries(self):
-        actual=app.layout(size=(21,21)).generate_boundaries()
+        actual=app.layout(size=21).generate_boundaries()
         expected=[['@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@'],
                   ['@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@'],
                   ['@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@','@'],
@@ -29,13 +29,13 @@ class layoutTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_timing_pattern(self):
-        actual=app.layout(size=(21,21)).timing_pattern(direction='row')
+        actual=app.layout(size=21).timing_pattern()
         expected=['#',' ','#',' ','#',' ','#',' ','#',' ','#',' ','#',' ','#',' ','#',' ','#',' ','#']
 
         self.assertEqual(actual, expected)
 
     def test_draw_timing_pattern(self):
-        actual=app.layout(size=(21,21)).draw_timing_pattern()
+        actual=app.layout(size=21).draw_timing_pattern()
         expected=[['@','@','@','@','@','@','#','@','@','@','@','@','@','@','@','@','@','@','@','@','@'],
                   ['@','@','@','@','@','@',' ','@','@','@','@','@','@','@','@','@','@','@','@','@','@'],
                   ['@','@','@','@','@','@','#','@','@','@','@','@','@','@','@','@','@','@','@','@','@'],

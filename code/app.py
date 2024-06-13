@@ -39,18 +39,17 @@ class Version:
         version_27_40:dict={156:20}
 
 class layout:
-    def __init__(self, size:tuple=(21,21)):
-        # Size = (rows, columns)
+    def __init__(self, size:int=21):
         self.size=size 
         
     def generate_boundaries(self):
         self.boundaries:list=[]
         
         # Set boundaries for the code
-        for col in range(self.size[0]):
+        for col in range(self.size):
             self.row_boundaries:list=[]
 
-            for row in range(self.size[1]):
+            for row in range(self.size):
                 self.row_boundaries.append('@')
                         
             self.boundaries.append(self.row_boundaries)
@@ -58,16 +57,10 @@ class layout:
         return self.boundaries
 
     # Prepare lists that will be used as timing pattern template
-    def timing_pattern(self, direction:str):
+    def timing_pattern(self):
         self.row_timing:list=[]
-        
-        # QR Codes are square... I will remove that part
-        if direction=='row':
-            length=self.size[0]
-        elif direction=='column':
-            length=self.size[1]
 
-        for i in range(length):
+        for i in range(self.size):
             if i%2==0:
                 self.row_timing.append('#')
             else:
@@ -77,8 +70,7 @@ class layout:
 
     # Combine timing patterns from template
     def draw_timing_pattern(self, method_input=generate_boundaries):
-        row=self.timing_pattern(direction='row')
-        column=self.timing_pattern(direction='column')
+        pattern_template=self.timing_pattern()
         
         # Check due to passing method as argument
         if callable(method_input):
@@ -87,10 +79,10 @@ class layout:
             structure=method_input
         
         # Drawing timing patterns using template
-        for i in range(len(column)):
-            structure[i][6]=column[i]
+        for i in range(len(pattern_template)):
+            structure[i][6]=pattern_template[i]
         
-        structure[6]=row
+        structure[6]=pattern_template
 
         return structure
 
