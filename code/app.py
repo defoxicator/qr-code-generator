@@ -29,16 +29,18 @@ class userInput:
 
         return analyzed_text
 
+    def input_to_data_bits(self):
+        input_bits=self.analyze_input()
+        data_bits:str=''
+
+        for character in input_bits:
+            for bit in character.values():
+                data_bits+=bit
+
+        return data_bits
+
 # STEP 2.
 # Fit to version number
-
-class Version:
-# Versions as dict like
-# version_x_y:dict={number_of_bits:number_of_codewords}
-    def __init__(self):
-        version_1_9:dict={148:19}
-        version_10_26:dict={156:20}
-        version_27_40:dict={156:20}
 
 class layout:
     def __init__(self, size:int=21):

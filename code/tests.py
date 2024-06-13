@@ -22,6 +22,10 @@ class userInputTest(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
+    def test_input_to_data_bits(self):
+        actual=app.userInput(text_input='Hello world!123').input_to_data_bits()
+        expected:str='0001111011011100100011000101010000001100010101100110101001101011010'
+
 class layoutTest(unittest.TestCase):
     def test_boundaries(self):
         actual=app.layout(size=21).generate_boundaries()
