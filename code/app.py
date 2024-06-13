@@ -161,7 +161,7 @@ class layout:
     def draw_dummy_format_bits(self, method_input=generate_boundaries):
         # Check due to passing method as argument
         structure=self.is_callable(method_input=method_input)
-        
+
         return structure
 
     # Combine the whole layout of QR Code before adding meaningful data
@@ -235,4 +235,4 @@ class qrCode():
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(userInput().input_to_data_bits())
+    layout().print_qr_code_layout()
