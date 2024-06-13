@@ -175,6 +175,37 @@ class layout:
 
         print(qr_code)           
 
+
+class qrCode():
+    def __init__(self):
+        ...
+
+    # Get data from user input and add to it the encoding bits and count
+    def concatenate_data(self):
+        ...
+
+
+    # Use library with Reed-Solomon error correction codes.
+    def error_correction(self):
+        ...
+
+    # Draw concatenated data with needed bits to the QR Code
+    def draw_data(self):
+        ...
+
+    # Get all mask templates under this function and apply every mask to
+    # generated QR Code
+    def apply_masking(self):
+        ...
+
+    # Calculate which mask is most beneficial and select it
+    def check_masking(self):
+        ...
+
+    # Present final QR Code in Version 1
+    def print_qr_code(self):
+        ...
+
 # STEP 6.
 # Draw codewords and remainder
 
