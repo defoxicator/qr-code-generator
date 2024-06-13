@@ -128,8 +128,8 @@ class layoutTest(unittest.TestCase):
         
         self.assertEqual(actual, expected)
 
-    def test_draw_timing_pattern(self):
-        actual=app.layout(size=21).draw_timing_pattern()
+    def test_draw_dummy_format_bits(self):
+        actual=app.layout(size=21).draw_dummy_format_bits()
         expected=[['@','@','@','@','@','@','@','@',' ','@','@','@','@','@','@','@','@','@','@','@','@'],
                   ['@','@','@','@','@','@','@','@',' ','@','@','@','@','@','@','@','@','@','@','@','@'],
                   ['@','@','@','@','@','@','@','@',' ','@','@','@','@','@','@','@','@','@','@','@','@'],
