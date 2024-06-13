@@ -6,7 +6,7 @@ import unicodedata
 # STEP 1.
 # Create data segment
 
-class Input:
+class userInput:
     def __init__(self):
         self.text_input:str=input('Please insert text that should be\
                                   converted to QR Code:\n> ')
@@ -47,7 +47,7 @@ class Version:
 # STEP 5.
 # Draw fixed patterns
 
-class qrCode:
+class layout:
     def __init__(self, size:tuple=(21,21)):
         # Size = (rows, columns)
         self.size=size 
@@ -157,15 +157,15 @@ class qrCode:
 
         return structure
     
-    def combine_qr_code(self):
+    def combine_qr_code_layout(self):
         combined=self.generate_boundaries()
         self.draw_timing_pattern(combined)
         self.draw_finding_pattern(combined)
 
         return combined
 
-    def print_qr_code(self):
-        combined=self.combine_qr_code()
+    def print_qr_code_layout(self):
+        combined=self.combine_qr_code_layout()
         qr_code:str=''
         for row in range(len(combined)):
             for column in combined[row]:
@@ -194,4 +194,4 @@ class qrCode:
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    qrCode().print_qr_code()
+    layout().print_qr_code_layout()
