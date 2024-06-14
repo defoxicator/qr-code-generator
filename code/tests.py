@@ -3,13 +3,14 @@ import app
 
 class userInputTest(unittest.TestCase):
     def test_analyze_input(self):
-        actual=app.userInput(text_input='Hello world!123').analyze_input()
+        actual=app.userInput(text_input='Hello, world! 123').analyze_input()
         expected=[
             {'H': '01001000'},
             {'e': '01100101'},
             {'l': '01101100'},
             {'l': '01101100'},
             {'o': '01101111'},
+            {',': '00101100'},
             {' ': '00100000'},
             {'w': '01110111'},
             {'o': '01101111'},
@@ -17,6 +18,7 @@ class userInputTest(unittest.TestCase):
             {'l': '01101100'},
             {'d': '01100100'},
             {'!': '00100001'},
+            {' ': '00100000'},
             {'1': '00110001'},
             {'2': '00110010'},
             {'3': '00110011'}
@@ -199,6 +201,13 @@ class layoutTest(unittest.TestCase):
             ['#', ' ', ' ', ' ', ' ', ' ', '#', ' ', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@'],
             ['#', '#', '#', '#', '#', '#', '#', ' ', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@']
         ]
+
+        self.assertEqual(actual, expected)
+
+class testQrCode(unittest.TestCase):
+    def test_concatenate_data(self):
+        actual=app.qrCode().concatenate_data(encoding='byte', text_input='Hello, world! 123')
+        expected:str='01000001000101001000011001010110110001101100011011110010110000100000011101110110111101110010011011000110010000100001001000000011000100110010001100110000'
 
         self.assertEqual(actual, expected)
 

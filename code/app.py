@@ -17,7 +17,7 @@ converted to QR Code (max 17 characters):\n> ')
         else:
             self.text_input=text_input
 
-    # As of now only binary encoding will be used
+    # As of now only byte encoding will be used
     def analyze_input(self, encoding:str='byte'):
         analyzed_text:list=list()
 
@@ -190,9 +190,29 @@ class qrCode():
         ...
 
     # Get data from user input and add to it the encoding bits and count
-    def concatenate_data(self):
-        ...
+    def concatenate_data(self, encoding:str='byte', text_input:str=None):
+        encoding_dict:dict={
+            'numeric': '0001',
+            'alphanumeric': '0010',
+            'byte': '0100',
+            'kanji': '1000'
+        }
 
+        char_count:str=str(bin(len(userInput(text_input=text_input).analyze_input(
+            encoding=encoding)))
+        )[2:]
+        while len(char_count) < 8:
+                char_count='0'+char_count
+        
+        terminator:str='0000'
+
+        # Padding is alternating EC and 11 hexadecimals to fill out the 
+        # QR Code if there is less than max characters.
+        padding:str=...
+
+        concat:str=encoding_dict[encoding]+char_count+userInput(
+            text_input=text_input
+        ).input_to_data_bits()+terminator
 
     # Use library with Reed-Solomon error correction codes.
     def error_correction(self):
@@ -235,4 +255,4 @@ class qrCode():
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    layout().print_qr_code_layout()
+    qrCode().concatenate_data()
