@@ -162,6 +162,19 @@ class layout:
         # Check due to passing method as argument
         structure=self.is_callable(method_input=method_input)
 
+        for i in range(9):
+            if i == 6:
+                pass
+            else:
+                structure[8][i]=' '
+                structure[i][8]=' '
+        
+        for i in range(9):
+            structure[-i][8]=' '
+            structure[8][-i]=' '
+        
+        structure[-8][8]='#'
+
         return structure
 
     # Combine the whole layout of QR Code before adding meaningful data
@@ -170,6 +183,7 @@ class layout:
         combined=self.generate_boundaries()
         self.draw_timing_pattern(combined)
         self.draw_finding_pattern(combined)
+        self.draw_dummy_format_bits(combined)
 
         return combined
 
@@ -255,4 +269,4 @@ class qrCode():
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    qrCode().concatenate_data()
+    print(layout().print_qr_code_layout())
