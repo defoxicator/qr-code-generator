@@ -212,21 +212,31 @@ class qrCode():
             'kanji': '1000'
         }
 
-        char_count:str=str(bin(len(userInput(text_input=text_input).analyze_input(
-            encoding=encoding)))
-        )[2:]
-        while len(char_count) < 8:
-                char_count='0'+char_count
+        char_count:int=len(userInput(text_input=text_input).analyze_input(
+            encoding=encoding
+        ))
+
+        char_count_binary:str=str(bin(char_count))[2:]
+        while len(char_count_binary) < 8:
+                char_count_binary='0'+char_count_binary
         
         terminator:str='0000'
 
         # Padding is alternating EC and 11 hexadecimals to fill out the 
         # QR Code if there is less than max characters.
-        padding:str=...
+        # EC = 11101100
+        # 11 = 00010001
+        padding_list:list=['11101100', '00010001']
+        padding:str=''
+        if char_count < 17:
+            for i in range(17-char_count):
+                padding:str=padding+padding_list[i%2]
 
-        concat:str=encoding_dict[encoding]+char_count+userInput(
+        concat:str=encoding_dict[encoding]+char_count_binary+userInput(
             text_input=text_input
-        ).input_to_data_bits()+terminator
+        ).input_to_data_bits()+terminator+padding
+
+        return concat
 
     # Use library with Reed-Solomon error correction codes.
     def error_correction(self):
@@ -269,4 +279,4 @@ class qrCode():
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(layout().print_qr_code_layout())
+    print(qrCode().concatenate_data())
