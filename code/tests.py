@@ -239,5 +239,11 @@ class testQrCode(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
+    def test_error_correction(self):
+        actual=app.qrCode().error_correction(encoding='byte', text_input='Hello, world! 123', ecc_level='low')
+        expected:str='10000101101010010101111000000111000010100011011011001001'
+
+        self.assertEqual(actual, expected)
+
 if __name__ == '__main__':
     unittest.main()

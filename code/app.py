@@ -1,4 +1,6 @@
 import unicodedata
+from reedsolo import RSCodec
+
 
 # STEP 0.
 # Encode characters in bytes
@@ -239,8 +241,19 @@ class qrCode():
         return concat
 
     # Use library with Reed-Solomon error correction codes.
-    def error_correction(self):
-        ...
+    def error_correction(self, encoding:str='byte', text_input:str=None, ecc_level:str='low'):
+        ecc_levels:dict={
+            'low':0.07, # 7%
+            'medium':0.15, # 15%
+            'quartile':0.25, # 25%
+            'high':0.30 # 30%
+        }
+
+        rsc=RSCodec(10)
+        var=qrCode().concatenate_data(encoding=encoding, text_input=text_input)
+        var=rsc.encode()
+
+        return var
 
     # Draw concatenated data with needed bits to the QR Code
     def draw_data(self):
@@ -279,4 +292,4 @@ class qrCode():
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(qrCode().concatenate_data())
+    print(qrCode().error_correction(text_input='Hello, world! 123'))
