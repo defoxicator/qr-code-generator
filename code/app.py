@@ -274,20 +274,32 @@ class qrCode(userInput):
         hexadecimal_string=hexadecimal_string[1:]
 
         rsc=reedsolo.RSCodec(7) # This depends on a qr code version
-        print(hexadecimal_string)
         encoded_message=rsc.encode(bytearray.fromhex(hexadecimal_string))
-        print(list(encoded_message))
         decimal_ecc=list(encoded_message)[len(hexadecimal_string.split()):]
         hexadecimal_ecc = [hex(x) for x in decimal_ecc]
 
         return hexadecimal_ecc
 
-    def add_error_correction(self):
-        concat=self.concatenate_data
+    def add_ecc_to_concatenated_data(self):
+        concat=self.concatenate_data()
+        hexadecimal_ecc=self.error_correction(ecc_level='low')
+        #binary_ecc=[bin(x) for x in hexadecimal_ecc]
+        binary_ecc=''
+        
+        for i in hexadecimal_ecc:
+            byte_size_binary=bin(int(i, 16))[2:]
+            while len(byte_size_binary) < 8:
+                byte_size_binary='0'+byte_size_binary
+            
+            binary_ecc+=byte_size_binary
+            
+        concat+=str(binary_ecc)
+
+        return concat
 
     # Draw concatenated data with needed bits to the QR Code
     def draw_data(self):
-        ...
+        ...        
 
     # Get all mask templates under this function and apply every mask to
     # generated QR Code
@@ -322,4 +334,4 @@ class qrCode(userInput):
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(qrCode(text_input='Hello, world! 123').error_correction())
+    print(qrCode(text_input='Hello, world! 123').add_ecc_to_concatenated_data())
