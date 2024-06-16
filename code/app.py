@@ -1,6 +1,5 @@
 import unicodedata
-from reedsolo import RSCodec
-
+import reedsolo
 
 # STEP 0.
 # Encode characters in bytes
@@ -219,8 +218,8 @@ class qrCode(userInput):
             'high':0.30 # 30%
         }
 
-        rsc=RSCodec(single_gen=False)
-        encoded=rsc.encode(bytes(self.text_input, encoding='utf-8'))
+        text_bytes=list(self.text_input.encode('utf-8'))
+        encoded=text_bytes
 
         return encoded
 
@@ -233,6 +232,7 @@ class qrCode(userInput):
             'kanji': '1000'
         }
 
+        # !!!!!!!!!!!
         character_count_binary:str=str(bin(self.character_count))[2:]
         while len(character_count_binary) < 8:
             character_count_binary='0'+character_count_binary
