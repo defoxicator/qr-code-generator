@@ -263,10 +263,18 @@ class qrCode(userInput):
             'high':0.30 # 30%
         }
 
-        text_bytes=list(self.text_input.encode('utf-8'))
+        codewords:list=self.split_blocks()
+        hexadecimal_string:str=''
+        for codeword in codewords:
+            if len(codeword[2:])<2:
+                hexadecimal_string+='0'+codeword[2:].upper()
+            else:
+                hexadecimal_string+=codeword[2:].upper()
+
         rsc=reedsolo.RSCodec(single_gen=False)
-        encoded_message=rsc.encode(text_bytes)
-        encoding=list(encoded_message)[len(text_bytes):]
+        print(hexadecimal_string)
+        encoded_message=rsc.encode(list(hexadecimal_string.encode('utf-8')))
+        encoding=list(encoded_message)[len(hexadecimal_string):]
 
         return encoding
 
@@ -307,4 +315,4 @@ class qrCode(userInput):
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(qrCode(text_input='Hello, world! 123').split_blocks())
+    print(qrCode(text_input='Hello, world! 123').error_correction())
