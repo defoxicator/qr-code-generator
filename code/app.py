@@ -219,26 +219,7 @@ class qrCode(userInput):
             'high':0.30 # 30%
         }
 
-        # string_to_encode:str=self.concatenate_data(encoding=encoding,
-        #                                        text_input=text_input)
-        
-        # n=8 # bits
-        # list_to_encode:list=[]
-        # list_encoded:list=[]
-
-        # for i in range(0, len(string_to_encode), n):
-        #     letter_string:str=''
-        #     for j in range(n):
-        #         letter_string+=string_to_encode[i+j]
-        #     list_to_encode.append(letter_string)
-        
-        # rsc=RSCodec(19)
-
-        # for binary_position in range(len(list_to_encode)):
-        # #     list_to_encode[binary_position]=hex(eval('0b'+list_to_encode[binary_position]))
-        #     list_encoded.append(rsc.encode(hex(eval('0b'+list_to_encode[binary_position]))))
-        
-        rsc=RSCodec()
+        rsc=RSCodec(19)
         encoded=rsc.encode(bytes(self.text_input, encoding='utf-8'))
 
         return encoded
