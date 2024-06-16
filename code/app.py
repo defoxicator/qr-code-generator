@@ -219,7 +219,7 @@ class qrCode(userInput):
             'high':0.30 # 30%
         }
 
-        rsc=RSCodec(19)
+        rsc=RSCodec(single_gen=False)
         encoded=rsc.encode(bytes(self.text_input, encoding='utf-8'))
 
         return encoded
