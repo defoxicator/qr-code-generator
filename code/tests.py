@@ -251,5 +251,11 @@ class testQrCode(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
+    def test_add_ecc_to_concatenated_data(self):
+        actual=app.qrCode(text_input='Hello, world! 123').add_ecc_to_concatenated_data()
+        expected:str='0100000100010100100001100101011011000110110001101111001011000010000001110111011011110111001001101100011001000010000100100000001100010011001000110011000010000101101010010101111000000111000010100011011011001001'
+
+        self.assertEqual(actual, expected)
+
 if __name__ == '__main__':
     unittest.main()

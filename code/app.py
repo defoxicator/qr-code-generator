@@ -273,14 +273,17 @@ class qrCode(userInput):
 
         hexadecimal_string=hexadecimal_string[1:]
 
-        rsc=reedsolo.RSCodec(7)
+        rsc=reedsolo.RSCodec(7) # This depends on a qr code version
         print(hexadecimal_string)
         encoded_message=rsc.encode(bytearray.fromhex(hexadecimal_string))
         print(list(encoded_message))
-        decimal_encoding=list(encoded_message)[len(hexadecimal_string.split()):]
-        hexadecimal_encoding = [hex(x) for x in decimal_encoding]
+        decimal_ecc=list(encoded_message)[len(hexadecimal_string.split()):]
+        hexadecimal_ecc = [hex(x) for x in decimal_ecc]
 
-        return hexadecimal_encoding
+        return hexadecimal_ecc
+
+    def add_error_correction(self):
+        concat=self.concatenate_data
 
     # Draw concatenated data with needed bits to the QR Code
     def draw_data(self):
