@@ -241,7 +241,7 @@ class testQrCode(unittest.TestCase):
 
     def test_error_correction(self):
         actual=app.qrCode(text_input='Hello, world! 123').error_correction(ecc_level='low')
-        expected:str='10000101101010010101111000000111000010100011011011001001'
+        expected:list=[127, 17, 87, 0, 127, 118, 81, 98, 141, 147]
 
         self.assertEqual(actual, expected)
 

@@ -49,3 +49,4 @@ Zig-zag pattern for generating the QR code is starting from bottom  right toward
 [QR Code step by step by Nayuki](https://www.nayuki.io/page/creating-a-qr-code-step-by-step)  
 [Wikipedia Page](https://en.wikipedia.org/wiki/QR_code)  
 [Unicode to Binary Converter](https://onlinetools.com/unicode/convert-unicode-to-binary)  
+[From QR Codes to Voyager: How Reed-Solomon Codes Work](https://medium.com/@rodin.dev/from-qr-codes-to-voyager-how-reed-solomon-codes-work-e249dcfa8474)  

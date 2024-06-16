@@ -219,9 +219,11 @@ class qrCode(userInput):
         }
 
         text_bytes=list(self.text_input.encode('utf-8'))
-        encoded=text_bytes
+        rsc=reedsolo.RSCodec(single_gen=False)
+        encoded_message=rsc.encode(text_bytes)
+        encoding=list(encoded_message)[len(text_bytes):]
 
-        return encoded
+        return encoding
 
     # Get data from user input and add to it the encoding bits and count
     def concatenate_data(self, encoding_type:str='byte'):
@@ -232,7 +234,6 @@ class qrCode(userInput):
             'kanji': '1000'
         }
 
-        # !!!!!!!!!!!
         character_count_binary:str=str(bin(self.character_count))[2:]
         while len(character_count_binary) < 8:
             character_count_binary='0'+character_count_binary
@@ -290,7 +291,4 @@ class qrCode(userInput):
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    # print(qrCode(text_input='Hello, world! 123').error_correction())
-    # qrCode(text_input='Hello, world! 123').error_correction()
-    print(userInput(text_input='Mamma mia').analyze_input())
-    print(userInput(text_input='Mamma mia').input_to_data_bits())
+    print(qrCode(text_input='Hello, world! 123').error_correction())
