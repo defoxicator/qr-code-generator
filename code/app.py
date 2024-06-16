@@ -19,7 +19,7 @@ converted to QR Code (max 17 characters):\n> ')
             self.text_input=text_input
 
     # As of now only byte encoding will be used
-    def analyze_input(self, encoding:str='byte'):
+    def analyze_input(self, encoding_type:str='byte'):
         analyzed_text:list=list()
 
         # Encode unicode characters to binary
@@ -201,12 +201,12 @@ class layout:
 
 
 class qrCode(userInput):
-    def __init__(self, text_input:str=None, encoding:str='byte'):
+    def __init__(self, text_input:str=None, encoding_type:str='byte'):
         super().__init__(text_input=text_input)
-        self.encoding=encoding
+        self.encoding_type=encoding_type
 
         self.character_count:int=len(self.analyze_input(
-            encoding=encoding
+            encoding_type=encoding_type
         ))
 
     # Use library with Reed-Solomon error correction codes.
@@ -224,8 +224,8 @@ class qrCode(userInput):
         return encoded
 
     # Get data from user input and add to it the encoding bits and count
-    def concatenate_data(self, encoding:str='byte'):
-        encoding_dict:dict={
+    def concatenate_data(self, encoding_type:str='byte'):
+        encoding_type_dict:dict={
             'numeric': '0001',
             'alphanumeric': '0010',
             'byte': '0100',
@@ -249,7 +249,7 @@ class qrCode(userInput):
             for i in range(17-self.character_count):
                 padding:str=padding+padding_list[i%2]
 
-        concat:str=encoding_dict[encoding]+character_count_binary+self.input_to_data_bits()+terminator+padding
+        concat:str=encoding_type_dict[encoding_type]+character_count_binary+self.input_to_data_bits()+terminator+padding
 
         return concat
 
@@ -290,5 +290,7 @@ class qrCode(userInput):
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(qrCode(text_input='Hello, world! 123').error_correction())
-    qrCode(text_input='Hello, world! 123').error_correction()
+    # print(qrCode(text_input='Hello, world! 123').error_correction())
+    # qrCode(text_input='Hello, world! 123').error_correction()
+    print(userInput(text_input='Mamma mia').analyze_input())
+    print(userInput(text_input='Mamma mia').input_to_data_bits())
