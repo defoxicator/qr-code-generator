@@ -201,47 +201,17 @@ class layout:
         print(qr_code)           
 
 
-class qrCode():
-    def __init__(self):
-        ...
+class qrCode(userInput):
+    def __init__(self, text_input:str=None, encoding:str='byte'):
+        super().__init__(text_input=text_input)
+        self.encoding=encoding
 
-    # Get data from user input and add to it the encoding bits and count
-    def concatenate_data(self, encoding:str='byte', text_input:str=None):
-        encoding_dict:dict={
-            'numeric': '0001',
-            'alphanumeric': '0010',
-            'byte': '0100',
-            'kanji': '1000'
-        }
-
-        char_count:int=len(userInput(text_input=text_input).analyze_input(
+        self.character_count:int=len(self.analyze_input(
             encoding=encoding
         ))
 
-        char_count_binary:str=str(bin(char_count))[2:]
-        while len(char_count_binary) < 8:
-                char_count_binary='0'+char_count_binary
-        
-        terminator:str='0000'
-
-        # Padding is alternating EC and 11 hexadecimals to fill out the 
-        # QR Code if there is less than max characters.
-        # EC = 11101100
-        # 11 = 00010001
-        padding_list:list=['11101100', '00010001']
-        padding:str=''
-        if char_count < 17:
-            for i in range(17-char_count):
-                padding:str=padding+padding_list[i%2]
-
-        concat:str=encoding_dict[encoding]+char_count_binary+userInput(
-            text_input=text_input
-        ).input_to_data_bits()+terminator+padding
-
-        return concat
-
     # Use library with Reed-Solomon error correction codes.
-    def error_correction(self, encoding:str='byte', text_input:str=None, ecc_level:str='low'):
+    def error_correction(self, ecc_level:str='low'):
         ecc_levels:dict={
             'low':0.07, # 7%
             'medium':0.15, # 15%
@@ -249,11 +219,58 @@ class qrCode():
             'high':0.30 # 30%
         }
 
-        rsc=RSCodec(10)
-        var=qrCode().concatenate_data(encoding=encoding, text_input=text_input)
-        var=rsc.encode()
+        # string_to_encode:str=self.concatenate_data(encoding=encoding,
+        #                                        text_input=text_input)
+        
+        # n=8 # bits
+        # list_to_encode:list=[]
+        # list_encoded:list=[]
 
-        return var
+        # for i in range(0, len(string_to_encode), n):
+        #     letter_string:str=''
+        #     for j in range(n):
+        #         letter_string+=string_to_encode[i+j]
+        #     list_to_encode.append(letter_string)
+        
+        # rsc=RSCodec(19)
+
+        # for binary_position in range(len(list_to_encode)):
+        # #     list_to_encode[binary_position]=hex(eval('0b'+list_to_encode[binary_position]))
+        #     list_encoded.append(rsc.encode(hex(eval('0b'+list_to_encode[binary_position]))))
+        
+        rsc=RSCodec()
+        encoded=rsc.encode(bytes(self.text_input, encoding='utf-8'))
+
+        return encoded
+
+    # Get data from user input and add to it the encoding bits and count
+    def concatenate_data(self, encoding:str='byte'):
+        encoding_dict:dict={
+            'numeric': '0001',
+            'alphanumeric': '0010',
+            'byte': '0100',
+            'kanji': '1000'
+        }
+
+        character_count_binary:str=str(bin(self.character_count))[2:]
+        while len(character_count_binary) < 8:
+            character_count_binary='0'+character_count_binary
+        
+        terminator:str='0000'
+
+        # Padding is alternating EC and 11 hexadecimals to fill out the 
+        # QR Code if there is less than max characters.
+        # 0xEC = 11101100
+        # 0x11 = 00010001
+        padding_list:list=['11101100', '00010001']
+        padding:str=''
+        if self.character_count < 17:
+            for i in range(17-self.character_count):
+                padding:str=padding+padding_list[i%2]
+
+        concat:str=encoding_dict[encoding]+character_count_binary+self.input_to_data_bits()+terminator+padding
+
+        return concat
 
     # Draw concatenated data with needed bits to the QR Code
     def draw_data(self):
@@ -292,4 +309,5 @@ class qrCode():
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(qrCode().error_correction(text_input='Hello, world! 123'))
+    print(qrCode(text_input='Hello, world! 123').error_correction())
+    qrCode(text_input='Hello, world! 123').error_correction()

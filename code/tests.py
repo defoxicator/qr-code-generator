@@ -234,13 +234,13 @@ class layoutTest(unittest.TestCase):
 
 class testQrCode(unittest.TestCase):
     def test_concatenate_data(self):
-        actual=app.qrCode().concatenate_data(encoding='byte', text_input='Hello, world! 123')
+        actual=app.qrCode(text_input='Hello, world! 123').concatenate_data(encoding='byte')
         expected:str='01000001000101001000011001010110110001101100011011110010110000100000011101110110111101110010011011000110010000100001001000000011000100110010001100110000'
 
         self.assertEqual(actual, expected)
 
     def test_error_correction(self):
-        actual=app.qrCode().error_correction(encoding='byte', text_input='Hello, world! 123', ecc_level='low')
+        actual=app.qrCode(text_input='Hello, world! 123').error_correction(ecc_level='low')
         expected:str='10000101101010010101111000000111000010100011011011001001'
 
         self.assertEqual(actual, expected)
