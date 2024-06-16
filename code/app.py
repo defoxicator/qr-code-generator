@@ -201,10 +201,10 @@ class layout:
 
 
 class qrCode(userInput):
-    def __init__(self, text_input:str=None, encoding_type:str='byte'):
+    def __init__(self, text_input:str=None, encoding_type:str='byte', size:int=21):
         super().__init__(text_input=text_input)
         self.encoding_type=encoding_type
-
+        self.size=size
         self.character_count:int=len(self.analyze_input(
             encoding_type=encoding_type
         ))
@@ -292,14 +292,25 @@ class qrCode(userInput):
                 byte_size_binary='0'+byte_size_binary
             
             binary_ecc+=byte_size_binary
-            
+
         concat+=str(binary_ecc)
 
         return concat
 
     # Draw concatenated data with needed bits to the QR Code
     def draw_data(self):
-        ...        
+        boundaries=layout(size=self.size).combine_qr_code_layout()
+        drawing=boundaries
+        
+        qr_code:str=''
+        for row in range(len(drawing)):
+            for column in drawing[row]:
+                qr_code=qr_code+' '+column
+            qr_code=qr_code+'\n'     
+
+        print(qr_code)
+
+        # return drawing
 
     # Get all mask templates under this function and apply every mask to
     # generated QR Code
@@ -334,4 +345,4 @@ class qrCode(userInput):
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(qrCode(text_input='Hello, world! 123').add_ecc_to_concatenated_data())
+    print(qrCode(text_input='Hello, world! 123').draw_data())
