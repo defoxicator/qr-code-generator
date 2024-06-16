@@ -239,6 +239,12 @@ class testQrCode(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
+    def test_split_blocks(self):
+        acutal=app.qrCode(text_input='Hello, world! 123').split_blocks()
+        expected:list=['0x41', '0x14', '0x86', '0x56', '0xc6', '0xc6', '0xf2', '0xc2', '0x7', '0x76', '0xf7', '0x26', '0xc6', '0x42', '0x12', '0x3', '0x13', '0x23', '0x30']
+
+        self.assertEqual(acutal, expected)
+
     def test_error_correction(self):
         actual=app.qrCode(text_input='Hello, world! 123').error_correction(ecc_level='low')
         expected:list=[127, 17, 87, 0, 127, 118, 81, 98, 141, 147]

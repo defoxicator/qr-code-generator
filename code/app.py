@@ -209,23 +209,7 @@ class qrCode(userInput):
             encoding_type=encoding_type
         ))
 
-    # Use library with Reed-Solomon error correction codes.
-    def error_correction(self, ecc_level:str='low'):
-        ecc_levels:dict={
-            'low':0.07, # 7%
-            'medium':0.15, # 15%
-            'quartile':0.25, # 25%
-            'high':0.30 # 30%
-        }
-
-        text_bytes=list(self.text_input.encode('utf-8'))
-        rsc=reedsolo.RSCodec(single_gen=False)
-        encoded_message=rsc.encode(text_bytes)
-        encoding=list(encoded_message)[len(text_bytes):]
-
-        return encoding
-
-    # Get data from user input and add to it the encoding bits and count
+        # Get data from user input and add to it the encoding bits and count
     def concatenate_data(self, encoding_type:str='byte'):
         encoding_type_dict:dict={
             'numeric': '0001',
@@ -253,6 +237,38 @@ class qrCode(userInput):
         concat:str=encoding_type_dict[encoding_type]+character_count_binary+self.input_to_data_bits()+terminator+padding
 
         return concat
+
+    def split_blocks(self):
+        binary_string_data:str=self.concatenate_data()
+
+        # Split blocks to bytes (8 bits)
+        n=8
+        binary_codewords:list=[]
+        hexadecimal_codewords:list=[]
+        for i in range(round(len(binary_string_data)/n)):
+            binary_codewords.append(binary_string_data[:n])
+            binary_string_data=binary_string_data[n:]
+
+        for codeword in binary_codewords:
+            hexadecimal_codewords.append(hex(int(codeword, 2)))
+
+        return hexadecimal_codewords
+
+    # Use library with Reed-Solomon error correction codes.
+    def error_correction(self, ecc_level:str='low'):
+        ecc_levels:dict={
+            'low':0.07, # 7%
+            'medium':0.15, # 15%
+            'quartile':0.25, # 25%
+            'high':0.30 # 30%
+        }
+
+        text_bytes=list(self.text_input.encode('utf-8'))
+        rsc=reedsolo.RSCodec(single_gen=False)
+        encoded_message=rsc.encode(text_bytes)
+        encoding=list(encoded_message)[len(text_bytes):]
+
+        return encoding
 
     # Draw concatenated data with needed bits to the QR Code
     def draw_data(self):
@@ -291,4 +307,4 @@ class qrCode(userInput):
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(qrCode(text_input='Hello, world! 123').error_correction())
+    print(qrCode(text_input='Hello, world! 123').split_blocks())
