@@ -330,9 +330,7 @@ class qrCode(userInput):
             data=data[1:] 
 
         return drawing
-
-        # return drawing
-
+    
     # Get all mask templates under this function and apply every mask to
     # generated QR Code
     # Calculate which mask is most beneficial and select it
