@@ -292,6 +292,30 @@ class qrCode(userInput):
 
     def zig_zag_pattern(self):
         zig_zag:list=[]
+        boundaries=layout(size=self.size).combine_qr_code_layout()
+        direction:str='up'
+
+        def direction_up(column:int):
+            for row in range(self.size-1, -1, -1):
+                if boundaries[row][column-1]=='@':
+                    zig_zag.append((row, column))
+                    zig_zag.append((row, column-1))
+        
+        def direction_down(column:int):
+            for row in range(self.size):
+                if boundaries[row][column-1]=='@':
+                    zig_zag.append((row, column))
+                    zig_zag.append((row, column-1))
+
+        for column in range(self.size-1, -1, -4):
+            if column<=0:
+                continue
+            elif column<6:
+                direction_up(column-1)
+                direction_down(column-3)
+            else:
+                direction_up(column)
+                direction_down(column-2)
 
         return zig_zag
 
@@ -299,9 +323,9 @@ class qrCode(userInput):
     def draw_data(self):
         boundaries=layout(size=self.size).combine_qr_code_layout()
         data=self.add_ecc_to_concatenated_data()
-
-        drawing=boundaries
         
+        drawing=boundaries
+
         qr_code:str=''
         for row in range(len(drawing)):
             for column in drawing[row]:
@@ -363,4 +387,4 @@ class qrCode(userInput):
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(qrCode(text_input='Hello, world! 123').draw_data())
+    print(qrCode(text_input='Hello, world! 123').zig_zag_pattern())
