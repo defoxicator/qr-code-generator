@@ -301,20 +301,33 @@ class qrCode(userInput):
                 qr_code=qr_code+' '+column
             qr_code=qr_code+'\n'     
 
-        print(qr_code)
+        return drawing
 
         # return drawing
 
     # Get all mask templates under this function and apply every mask to
     # generated QR Code
-    def apply_masking(self):
-        ...
-
-    def draw_format_bits(self):
-        ...
-
     # Calculate which mask is most beneficial and select it
     def check_masking(self):
+        # Masking patterns
+        # i - horizontal
+        # j - vertical
+        masking_patterns:dict={
+            '000':'(i+j)%2=0',
+            '001':'i%2=0',
+            '010':'j%3=0',
+            '100':'(i+j)%3=0',
+            '011':'(i/2 + j/3)%2=0',
+            '101':'(i*j)%2+(i*j)%3=0',
+            '110':'((i*j)%3+i*j)%2=0',
+            '111':'((i*j)%3+i+j)%2=0'
+        }
+
+    # Apply the best mask
+    def apply_masking(self):
+        ...
+    
+    def draw_format_bits(self):
         ...
 
     # Present final QR Code in Version 1
