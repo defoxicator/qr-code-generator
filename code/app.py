@@ -1,11 +1,4 @@
-import unicodedata
 import reedsolo
-
-# STEP 0.
-# Encode characters in bytes
-
-# STEP 1.
-# Create data segment
 
 class userInput:
     def __init__(self, text_input:str=None):
@@ -315,6 +308,9 @@ class qrCode(userInput):
     # Get all mask templates under this function and apply every mask to
     # generated QR Code
     def apply_masking(self):
+        ...
+
+    def draw_format_bits(self):
         ...
 
     # Calculate which mask is most beneficial and select it
