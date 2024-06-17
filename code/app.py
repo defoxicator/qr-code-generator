@@ -355,6 +355,8 @@ class qrCode(userInput):
     def apply_masking(self):
         ...
     
+    # Add to the QR Code format bits:
+    # ECC Level, Masking, ECC for masking
     def draw_format_bits(self):
         ...
 
