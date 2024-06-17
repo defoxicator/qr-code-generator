@@ -290,9 +290,16 @@ class qrCode(userInput):
 
         return concat
 
+    def zig_zag_pattern(self):
+        zig_zag:list=[]
+
+        return zig_zag
+
     # Draw concatenated data with needed bits to the QR Code
     def draw_data(self):
         boundaries=layout(size=self.size).combine_qr_code_layout()
+        data=self.add_ecc_to_concatenated_data()
+
         drawing=boundaries
         
         qr_code:str=''
@@ -301,7 +308,7 @@ class qrCode(userInput):
                 qr_code=qr_code+' '+column
             qr_code=qr_code+'\n'     
 
-        return drawing
+        return qr_code
 
         # return drawing
 
@@ -322,6 +329,8 @@ class qrCode(userInput):
             '110':'((i*j)%3+i*j)%2=0',
             '111':'((i*j)%3+i+j)%2=0'
         }
+
+        ...
 
     # Apply the best mask
     def apply_masking(self):
