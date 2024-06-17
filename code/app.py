@@ -316,27 +316,20 @@ class qrCode(userInput):
             direction_pattern(column, direction)
 
             direction='down' if direction=='up' else 'up'
-            # if direction=='up':
-            #     direction='down'
-            # else:
-            #     direction='up'
 
         return zig_zag
 
     # Draw concatenated data with needed bits to the QR Code
     def draw_data(self):
-        boundaries=layout(size=self.size).combine_qr_code_layout()
+        drawing=layout(size=self.size).combine_qr_code_layout()
         data=self.add_ecc_to_concatenated_data()
-        
-        drawing=boundaries
+        zig_zag=self.zig_zag_pattern()
 
-        qr_code:str=''
-        for row in range(len(drawing)):
-            for column in drawing[row]:
-                qr_code=qr_code+' '+column
-            qr_code=qr_code+'\n'     
+        for (i,j) in zig_zag:
+            drawing[i][j]=' ' if data[0]=='0' else '#'
+            data=data[1:] 
 
-        return qr_code
+        return drawing
 
         # return drawing
 
@@ -391,4 +384,4 @@ class qrCode(userInput):
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(qrCode(text_input='Hello, world! 123').zig_zag_pattern())
+    print(qrCode(text_input='Hello, world! 123').draw_data())
