@@ -362,6 +362,14 @@ class qrCode(userInput):
 
     # Present final QR Code in Version 1
     def print_qr_code(self):
+        # combined=self.draw_format_bits()
+        # qr_code:str=''
+        # for row in range(len(combined)):
+        #     for column in combined[row]:
+        #         qr_code=qr_code+' '+column
+        #     qr_code=qr_code+'\n'     
+
+        # print(qr_code)
         ...
 
 # STEP 6.
