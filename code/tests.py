@@ -664,5 +664,20 @@ class testQrCode(unittest.TestCase):
         self.assertEqual(actual, expected)
 
 
+    def test_generate_format_bits(self):
+        cases:dict={
+            ('low', '100'): '011001000111101'
+        }
+
+        actual:list=[]
+        expected:list=[]
+
+        for k, v in cases.items():
+            actual.append(app.qrCode(text_input='Hello, world! 123', ecc_level=k[0]).generate_format_bits(masking_pattern=k[1]))
+            expected.append(v)
+
+        self.assertEqual(actual, expected)
+
+
 if __name__ == '__main__':
     unittest.main()
