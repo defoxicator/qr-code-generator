@@ -331,6 +331,20 @@ class qrCode(userInput):
 
         return drawing
     
+    def masking(self, i:int, j:int, masking_pattern):
+        masking_patterns:dict={
+            '000': (i+j)%2==0,
+            '001': i%2==0,
+            '010': j%3==0,
+            '100': (i+j)%3==0,
+            '011': (i/2 + j/3)%2==0,
+            '101': (i*j)%2+(i*j)%3==0,
+            '110': ((i*j)%3+i*j)%2==0,
+            '111': ((i*j)%3+i+j)%2==0
+        }
+
+        return masking_patterns[masking_pattern]
+    
     # Get all mask templates under this function and apply every mask to
     # generated QR Code
     # Calculate which mask is most beneficial and select it
@@ -338,16 +352,6 @@ class qrCode(userInput):
         # Masking patterns
         # i - horizontal
         # j - vertical
-        masking_patterns:dict={
-            '000':'(i+j)%2=0',
-            '001':'i%2=0',
-            '010':'j%3=0',
-            '100':'(i+j)%3=0',
-            '011':'(i/2 + j/3)%2=0',
-            '101':'(i*j)%2+(i*j)%3=0',
-            '110':'((i*j)%3+i*j)%2=0',
-            '111':'((i*j)%3+i+j)%2=0'
-        }
 
         ...
 
@@ -392,4 +396,4 @@ class qrCode(userInput):
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(qrCode(text_input='Hello, world! 123').draw_data())
+    print(qrCode(text_input='Hello, world! 123').masking(i=20, j=21, masking_pattern='000'))
