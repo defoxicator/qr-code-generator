@@ -369,8 +369,10 @@ class qrCode(userInput):
 
         for coordinates, bool in masking.items():
             if bool==True:
-                data_symbol=masked_data[coordinates[0]][coordinates[1]]
-                data_symbol=' ' if data_symbol=='#' else '#'
+                if masked_data[coordinates[0]][coordinates[1]]=='#':
+                    masked_data[coordinates[0]][coordinates[1]]=' '
+                elif masked_data[coordinates[0]][coordinates[1]]==' ':
+                    masked_data[coordinates[0]][coordinates[1]]='#'
 
         return masked_data
 
@@ -385,7 +387,7 @@ class qrCode(userInput):
 
     # Present final QR Code in Version 1
     def print_qr_code(self):
-        # combined=self.draw_format_bits()
+        # combined=self.apply_masking_to_data(masking_pattern='000')
         # qr_code:str=''
         # for row in range(len(combined)):
         #     for column in combined[row]:
@@ -394,7 +396,6 @@ class qrCode(userInput):
 
         # print(qr_code)
         ...
-
 # STEP 6.
 # Draw codewords and remainder
 
