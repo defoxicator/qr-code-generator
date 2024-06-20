@@ -331,7 +331,10 @@ class qrCode(userInput):
 
         return drawing
     
-    def masking(self, i:int, j:int, masking_pattern):
+    def masking_bool(self, i:int, j:int, masking_pattern):
+        # Masking patterns
+        # i - horizontal
+        # j - vertical
         masking_patterns:dict={
             '000': (i+j)%2==0,
             '001': i%2==0,

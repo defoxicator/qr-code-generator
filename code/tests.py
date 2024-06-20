@@ -327,112 +327,112 @@ class testQrCode(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
-    def test_mask_000(self, masking_pattern='000'):
+    def test_mask_bool_000(self, masking_pattern='000'):
         cases:list=[(20,20), (14,15), (17,18), (13,11), (13,12)]
         test:list=[]
 
         for case in cases:
             i=case[0]
             j=case[1]
-            test.append(app.qrCode(text_input='Hello, world! 123').masking(i=i, j=j, masking_pattern=masking_pattern))
+            test.append(app.qrCode(text_input='Hello, world! 123').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
 
         actual=test
         expected=[True, False, False, True, False]
 
         self.assertEqual(actual, expected)
 
-    def test_mask_001(self, masking_pattern='001'):
+    def test_mask_bool_001(self, masking_pattern='001'):
         cases:list=[(20,20), (14,15), (17,18), (13,11), (13,12)]
         test:list=[]
 
         for case in cases:
             i=case[0]
             j=case[1]
-            test.append(app.qrCode(text_input='Hello, world! 123').masking(i=i, j=j, masking_pattern=masking_pattern))
+            test.append(app.qrCode(text_input='Hello, world! 123').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
 
         actual=test
         expected=[True, True, False, False, False]
 
         self.assertEqual(actual, expected)
 
-    def test_mask_010(self, masking_pattern='010'):
+    def test_mask_bool_010(self, masking_pattern='010'):
         cases:list=[(20,20), (14,15), (17,18), (13,11), (13,12)]
         test:list=[]
 
         for case in cases:
             i=case[0]
             j=case[1]
-            test.append(app.qrCode(text_input='Hello, world! 123').masking(i=i, j=j, masking_pattern=masking_pattern))
+            test.append(app.qrCode(text_input='Hello, world! 123').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
 
         actual=test
         expected=[False, True, True, False, True]
 
         self.assertEqual(actual, expected)
 
-    def test_mask_100(self, masking_pattern='100'):
+    def test_mask_bool_100(self, masking_pattern='100'):
         cases:list=[(20,20), (14,15), (17,18), (13,11), (13,12)]
         test:list=[]
 
         for case in cases:
             i=case[0]
             j=case[1]
-            test.append(app.qrCode(text_input='Hello, world! 123').masking(i=i, j=j, masking_pattern=masking_pattern))
+            test.append(app.qrCode(text_input='Hello, world! 123').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
 
         actual=test
         expected=[False, False, False, True, False]
 
         self.assertEqual(actual, expected)
 
-    def test_mask_011(self, masking_pattern='011'):
+    def test_mask_bool_011(self, masking_pattern='011'):
         cases:list=[(20,20), (14,15), (17,18), (13,11), (13,12)]
         test:list=[]
 
         for case in cases:
             i=case[0]
             j=case[1]
-            test.append(app.qrCode(text_input='Hello, world! 123').masking(i=i, j=j, masking_pattern=masking_pattern))
+            test.append(app.qrCode(text_input='Hello, world! 123').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
 
         actual=test
         expected=[False, True, False, False, False]
 
         self.assertEqual(actual, expected)
 
-    def test_mask_101(self, masking_pattern='101'):
+    def test_mask_bool_101(self, masking_pattern='101'):
         cases:list=[(20,20), (14,15), (17,18), (13,11), (13,12)]
         test:list=[]
 
         for case in cases:
             i=case[0]
             j=case[1]
-            test.append(app.qrCode(text_input='Hello, world! 123').masking(i=i, j=j, masking_pattern=masking_pattern))
+            test.append(app.qrCode(text_input='Hello, world! 123').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
 
         actual=test
         expected=[False, True, True, False, True]
 
         self.assertEqual(actual, expected)
 
-    def test_mask_110(self, masking_pattern='110'):
+    def test_mask_bool_110(self, masking_pattern='110'):
         cases:list=[(20,20), (14,15), (17,18), (13,11), (13,12)]
         test:list=[]
 
         for case in cases:
             i=case[0]
             j=case[1]
-            test.append(app.qrCode(text_input='Hello, world! 123').masking(i=i, j=j, masking_pattern=masking_pattern))
+            test.append(app.qrCode(text_input='Hello, world! 123').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
 
         actual=test
         expected=[False, True, True, False, True]
 
         self.assertEqual(actual, expected)
 
-    def test_mask_111(self, masking_pattern='111'):
+    def test_mask_bool_111(self, masking_pattern='111'):
         cases:list=[(20,20), (14,15), (17,18), (13,11), (13,12)]
         test:list=[]
 
         for case in cases:
             i=case[0]
             j=case[1]
-            test.append(app.qrCode(text_input='Hello, world! 123').masking(i=i, j=j, masking_pattern=masking_pattern))
+            test.append(app.qrCode(text_input='Hello, world! 123').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
 
         actual=test
         expected=[False, False, False, True, False]
