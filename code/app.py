@@ -331,7 +331,7 @@ class qrCode(userInput):
 
         return drawing
     
-    def masking_bool(self, i:int, j:int, masking_pattern):
+    def masking_bool(self, i:int, j:int, masking_pattern:str):
         # Masking patterns
         # i - horizontal
         # j - vertical
@@ -351,15 +351,31 @@ class qrCode(userInput):
     # Get all mask templates under this function and apply every mask to
     # generated QR Code
     # Calculate which mask is most beneficial and select it
-    def check_masking(self):
+    def apply_masking_to_data(self, masking_pattern:str):
         # Masking patterns
         # i - horizontal
         # j - vertical
 
-        ...
+        zig_zag_pattern=self.zig_zag_pattern()
+        masking:dict={}
+        data=self.draw_data()
+        masked_data:list=data
+
+        # Masking data
+        for coordinates in zig_zag_pattern:
+            bool=self.masking_bool(i=coordinates[0], j=coordinates[1],
+                              masking_pattern=masking_pattern)
+            masking[coordinates]=bool
+
+        for coordinates, bool in masking.items():
+            if bool==True:
+                data_symbol=masked_data[coordinates[0]][coordinates[1]]
+                data_symbol=' ' if data_symbol=='#' else '#'
+
+        return masked_data
 
     # Apply the best mask
-    def apply_masking(self):
+    def draw_masking(self):
         ...
     
     # Add to the QR Code format bits:
@@ -399,4 +415,4 @@ class qrCode(userInput):
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(qrCode(text_input='Hello, world! 123').masking(i=20, j=21, masking_pattern='000'))
+    print(qrCode(text_input='Hello, world! 123').apply_masking_to_data(masking_pattern='000'))
