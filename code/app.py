@@ -194,7 +194,7 @@ class layout:
 
 
 class qrCode(userInput):
-    def __init__(self, text_input:str=None, encoding_type:str='byte', size:int=21, ecc_level='low'):
+    def __init__(self, text_input:str=None, encoding_type:str='byte', size:int=21, ecc_level:str='low', masking_pattern:str='000'):
         super().__init__(text_input=text_input)
         self.encoding_type=encoding_type
         self.size=size
@@ -202,6 +202,7 @@ class qrCode(userInput):
             encoding_type=encoding_type
         ))
         self.ecc_level=ecc_level
+        self.masking_pattern=masking_pattern
 
         # Get data from user input and add to it the encoding bits and count
     def concatenate_data(self, encoding_type:str='byte'):
@@ -332,7 +333,7 @@ class qrCode(userInput):
 
         return drawing
     
-    def masking_bool(self, i:int, j:int, masking_pattern:str):
+    def masking_bool(self, i:int, j:int):
         # Masking patterns
         # i - horizontal
         # j - vertical
@@ -347,12 +348,12 @@ class qrCode(userInput):
             '111': ((i*j)%3+i+j)%2==0
         }
 
-        return masking_patterns[masking_pattern]
+        return masking_patterns[self.masking_pattern]
     
     # Get all mask templates under this function and apply every mask to
     # generated QR Code
     # Calculate which mask is most beneficial and select it
-    def apply_masking_to_data(self, masking_pattern:str):
+    def apply_masking_to_data(self):
         # Masking patterns
         # i - horizontal
         # j - vertical
@@ -364,8 +365,7 @@ class qrCode(userInput):
 
         # Masking data
         for coordinates in zig_zag_pattern:
-            bool=self.masking_bool(i=coordinates[0], j=coordinates[1],
-                              masking_pattern=masking_pattern)
+            bool=self.masking_bool(i=coordinates[0], j=coordinates[1])
             masking[coordinates]=bool
 
         for coordinates, bool in masking.items():
@@ -377,41 +377,88 @@ class qrCode(userInput):
 
         return masked_data
     
-    # Add to the QR Code format bits:
-    # ECC Level, Masking, ECC for masking
-    def generate_format_bits(self, masking_pattern:str):
-        ecc_encoding:dict={
-            'low': '01',
-            'medium': '00',
-            'quartile': '11',
-            'high': '10'
-        }
-        generator_polynominal='10100110111'
-        to_encode:str=ecc_encoding[self.ecc_level]+masking_pattern
-        concat:str=to_encode
+    # Leaving it as it works but will be covered with a table
+    # # Add to the QR Code format bits:
+    # # ECC Level, Masking, ECC for masking
+    # def generate_format_bits(self):
+    #     ecc_encoding:dict={
+    #         'low': '01',
+    #         'medium': '00',
+    #         'quartile': '11',
+    #         'high': '10'
+    #     }
+    #     generator_polynominal='10100110111'
+    #     to_encode:str=ecc_encoding[self.ecc_level]+self.masking_pattern
+    #     concat:str=to_encode
 
-        while len(concat)<15:
-            concat=concat+'0'
+    #     while len(concat)<15:
+    #         concat=concat+'0'
 
-        i=0
-        generator:str=''
-        while len(concat)!=10:
-            if len(concat)>10:
-                while concat[0]=='0':
-                    concat=concat[1:]
+    #     i=0
+    #     generator:str=''
+    #     while len(concat)!=10:
+    #         if len(concat)>10:
+    #             while concat[0]=='0':
+    #                 concat=concat[1:]
 
-                generator=generator_polynominal+'0'*(len(concat)-len(generator_polynominal))
-                concat=str(bin(int(concat, 2)^int(generator, 2)))[2:]
+    #             generator=generator_polynominal+'0'*(len(concat)-len(generator_polynominal))
+    #             concat=str(bin(int(concat, 2)^int(generator, 2)))[2:]
  
-            if len(concat)<10:
-                while len(concat)<10:
-                    concat='0'+concat
+    #         if len(concat)<10:
+    #             while len(concat)<10:
+    #                 concat='0'+concat
 
-        encoded=to_encode+concat
+    #     encoded=to_encode+concat
 
-        return encoded
+    #     return encoded
+
+    def format_bits(self):
+        format_bits_masked:dict={
+            ('low', '000'): '111011111000100',
+            ('low', '001'):	'111001011110011',
+            ('low', '010'): '111110110101010',
+            ('low', '100'): '111100010011101',
+            ('low', '011'): '110011000101111',
+            ('low', '101'): '10001100011000',
+            ('low', '110'): '110110001000001',
+            ('low', '111'): '110100101110110',
+            ('medium', '000'): '101010000010010',
+            ('medium', '001'): '101000100100101',
+            ('medium', '010'): '101111001111100',
+            ('medium', '100'): '101101101001011',
+            ('medium', '011'): '100010111111001',
+            ('medium', '101'): '100000011001110',
+            ('medium', '110'): '100111110010111',
+            ('medium', '111'): '100101010100000',
+            ('quartile', '000'): '011010101011111',
+            ('quartile', '001'): '011000001101000',
+            ('quartile', '010'): '011111100110001',
+            ('quartile', '100'): '011101000000110',
+            ('quartile', '011'): '010010010110100',
+            ('quartile', '101'): '010000110000011',
+            ('quartile', '110'): '010111011011010',
+            ('quartile', '111'): '010101111101101',
+            ('high', '000'): '001011010001001',
+            ('high', '001'): '001001110111110',
+            ('high', '010'): '001110011100111',
+            ('high', '100'): '001100111010000',
+            ('high', '011'): '000011101100010',
+            ('high', '101'): '000001001010101',
+            ('high', '110'): '000110100001100',
+            ('high', '111'): '000100000111011'
+        }
+        masked:str=format_bits_masked[self.ecc_level, self.masking_pattern]
+
+        return masked
 
     def draw_format_bits(self):
+        structure:list=self.apply_masking_to_data
+        # Split format bits string in half
+        # Apply first half to bottom left
+        # Apply second half to top right
+        # Apply full length to top left
+
+        # retunr
         ...
 
 
@@ -450,4 +497,4 @@ class qrCode(userInput):
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(qrCode(text_input='Hello, world! 123').generate_format_bits(masking_pattern='000'))
+    print(qrCode(text_input='Hello, world! 123', masking_pattern='011').apply_masking_to_data())
