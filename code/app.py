@@ -194,13 +194,14 @@ class layout:
 
 
 class qrCode(userInput):
-    def __init__(self, text_input:str=None, encoding_type:str='byte', size:int=21):
+    def __init__(self, text_input:str=None, encoding_type:str='byte', size:int=21, ecc_level='low'):
         super().__init__(text_input=text_input)
         self.encoding_type=encoding_type
         self.size=size
         self.character_count:int=len(self.analyze_input(
             encoding_type=encoding_type
         ))
+        self.ecc_level=ecc_level
 
         # Get data from user input and add to it the encoding bits and count
     def concatenate_data(self, encoding_type:str='byte'):
@@ -248,7 +249,7 @@ class qrCode(userInput):
         return hexadecimal_codewords
 
     # Use library with Reed-Solomon error correction codes.
-    def error_correction(self, ecc_level:str='low'):
+    def error_correction(self):
         ecc_levels:dict={
             'low':0.07, # 7%
             'medium':0.15, # 15%
@@ -275,8 +276,8 @@ class qrCode(userInput):
 
     def add_ecc_to_concatenated_data(self):
         concat=self.concatenate_data()
-        hexadecimal_ecc=self.error_correction(ecc_level='low')
-        #binary_ecc=[bin(x) for x in hexadecimal_ecc]
+        hexadecimal_ecc=self.error_correction()
+        # binary_ecc=[bin(x) for x in hexadecimal_ecc]
         binary_ecc=''
         
         for i in hexadecimal_ecc:
@@ -375,14 +376,27 @@ class qrCode(userInput):
                     masked_data[coordinates[0]][coordinates[1]]='#'
 
         return masked_data
-
-    # Apply the best mask
-    def draw_masking(self):
-        ...
     
     # Add to the QR Code format bits:
     # ECC Level, Masking, ECC for masking
+    def generate_format_bits(self, masking_pattern:str):
+        ecc_encoding:dict={
+            'low': '01',
+            'medium': '00',
+            'quartile': '11',
+            'high': '10'
+        }
+    
+        concat:str=ecc_encoding[self.ecc_level]+masking_pattern
+
+        return concat
+
     def draw_format_bits(self):
+        ...
+
+
+    # Apply the best mask
+    def draw_masking(self):
         ...
 
     # Present final QR Code in Version 1
@@ -416,4 +430,4 @@ class qrCode(userInput):
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(qrCode(text_input='Hello, world! 123').apply_masking_to_data(masking_pattern='000'))
+    print(qrCode(text_input='Hello, world! 123').generate_format_bits(masking_pattern='000'))

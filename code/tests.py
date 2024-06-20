@@ -234,31 +234,31 @@ class layoutTest(unittest.TestCase):
 
 class testQrCode(unittest.TestCase):
     def test_concatenate_data(self):
-        actual=app.qrCode(text_input='Hello, world! 123').concatenate_data(encoding_type='byte')
+        actual=app.qrCode(text_input='Hello, world! 123', ecc_level='low').concatenate_data(encoding_type='byte')
         expected:str='01000001000101001000011001010110110001101100011011110010110000100000011101110110111101110010011011000110010000100001001000000011000100110010001100110000'
 
         self.assertEqual(actual, expected)
 
     def test_split_blocks(self):
-        acutal=app.qrCode(text_input='Hello, world! 123').split_blocks()
+        acutal=app.qrCode(text_input='Hello, world! 123', ecc_level='low').split_blocks()
         expected:list=['0x41', '0x14', '0x86', '0x56', '0xc6', '0xc6', '0xf2', '0xc2', '0x7', '0x76', '0xf7', '0x26', '0xc6', '0x42', '0x12', '0x3', '0x13', '0x23', '0x30']
 
         self.assertEqual(acutal, expected)
 
     def test_error_correction(self):
-        actual=app.qrCode(text_input='Hello, world! 123').error_correction(ecc_level='low')
+        actual=app.qrCode(text_input='Hello, world! 123', ecc_level='low').error_correction()
         expected:list=['0x85', '0xa9', '0x5e', '0x7', '0xa', '0x36', '0xc9']
 
         self.assertEqual(actual, expected)
 
     def test_add_ecc_to_concatenated_data(self):
-        actual=app.qrCode(text_input='Hello, world! 123').add_ecc_to_concatenated_data()
+        actual=app.qrCode(text_input='Hello, world! 123', ecc_level='low').add_ecc_to_concatenated_data()
         expected:str='0100000100010100100001100101011011000110110001101111001011000010000001110111011011110111001001101100011001000010000100100000001100010011001000110011000010000101101010010101111000000111000010100011011011001001'
 
         self.assertEqual(actual, expected)
 
     def test_zig_zag_pattern(self):
-        actual=app.qrCode(text_input='Hello, world! 123').zig_zag_pattern()
+        actual=app.qrCode(text_input='Hello, world! 123', ecc_level='low').zig_zag_pattern()
         expected:list=[
             (20,20), (20,19), (19,20), (19,19), (18,20), (18,19),
             (17,20), (17,19), (16,20), (16,19), (15,20), (15,19),
@@ -300,7 +300,7 @@ class testQrCode(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_draw_data(self):
-        actual=app.qrCode(text_input='Hello, world! 123').draw_data()
+        actual=app.qrCode(text_input='Hello, world! 123', ecc_level='low').draw_data()
         expected=[
             ['#', '#', '#', '#', '#', '#', '#', ' ', ' ', ' ', ' ', '#', '#', ' ', '#', '#', '#', '#', '#', '#', '#'],
             ['#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#'],
@@ -334,7 +334,7 @@ class testQrCode(unittest.TestCase):
         for case in cases:
             i=case[0]
             j=case[1]
-            test.append(app.qrCode(text_input='Hello, world! 123').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
+            test.append(app.qrCode(text_input='Hello, world! 123', ecc_level='low').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
 
         actual=test
         expected=[True, False, False, True, False]
@@ -348,7 +348,7 @@ class testQrCode(unittest.TestCase):
         for case in cases:
             i=case[0]
             j=case[1]
-            test.append(app.qrCode(text_input='Hello, world! 123').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
+            test.append(app.qrCode(text_input='Hello, world! 123', ecc_level='low').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
 
         actual=test
         expected=[True, True, False, False, False]
@@ -362,7 +362,7 @@ class testQrCode(unittest.TestCase):
         for case in cases:
             i=case[0]
             j=case[1]
-            test.append(app.qrCode(text_input='Hello, world! 123').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
+            test.append(app.qrCode(text_input='Hello, world! 123', ecc_level='low').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
 
         actual=test
         expected=[False, True, True, False, True]
@@ -376,7 +376,7 @@ class testQrCode(unittest.TestCase):
         for case in cases:
             i=case[0]
             j=case[1]
-            test.append(app.qrCode(text_input='Hello, world! 123').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
+            test.append(app.qrCode(text_input='Hello, world! 123', ecc_level='low').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
 
         actual=test
         expected=[False, False, False, True, False]
@@ -390,7 +390,7 @@ class testQrCode(unittest.TestCase):
         for case in cases:
             i=case[0]
             j=case[1]
-            test.append(app.qrCode(text_input='Hello, world! 123').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
+            test.append(app.qrCode(text_input='Hello, world! 123', ecc_level='low').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
 
         actual=test
         expected=[True, True, True, False, True]
@@ -404,7 +404,7 @@ class testQrCode(unittest.TestCase):
         for case in cases:
             i=case[0]
             j=case[1]
-            test.append(app.qrCode(text_input='Hello, world! 123').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
+            test.append(app.qrCode(text_input='Hello, world! 123', ecc_level='low').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
 
         actual=test
         expected=[False, True, True, False, True]
@@ -418,7 +418,7 @@ class testQrCode(unittest.TestCase):
         for case in cases:
             i=case[0]
             j=case[1]
-            test.append(app.qrCode(text_input='Hello, world! 123').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
+            test.append(app.qrCode(text_input='Hello, world! 123', ecc_level='low').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
 
         actual=test
         expected=[False, True, True, False, True]
@@ -432,7 +432,7 @@ class testQrCode(unittest.TestCase):
         for case in cases:
             i=case[0]
             j=case[1]
-            test.append(app.qrCode(text_input='Hello, world! 123').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
+            test.append(app.qrCode(text_input='Hello, world! 123', ecc_level='low').masking_bool(i=i, j=j, masking_pattern=masking_pattern))
 
         actual=test
         expected=[False, False, False, True, False]
@@ -440,7 +440,7 @@ class testQrCode(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_apply_masking_to_data_000(self):
-        actual=app.qrCode(text_input='Hello, world! 123').apply_masking_to_data(masking_pattern='000')
+        actual=app.qrCode(text_input='Hello, world! 123', ecc_level='low').apply_masking_to_data(masking_pattern='000')
         expected=[
             ['#', '#', '#', '#', '#', '#', '#', ' ', ' ', ' ', '#', '#', ' ', ' ', '#', '#', '#', '#', '#', '#', '#'],
             ['#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', '#', '#', '#', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#'],
@@ -468,7 +468,7 @@ class testQrCode(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_apply_masking_to_data_001(self):
-        actual=app.qrCode(text_input='Hello, world! 123').apply_masking_to_data(masking_pattern='001')
+        actual=app.qrCode(text_input='Hello, world! 123', ecc_level='low').apply_masking_to_data(masking_pattern='001')
         expected=[
             ['#', '#', '#', '#', '#', '#', '#', ' ', ' ', '#', '#', ' ', ' ', ' ', '#', '#', '#', '#', '#', '#', '#'],
             ['#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#'],
@@ -496,7 +496,7 @@ class testQrCode(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_apply_masking_to_data_010(self):
-        actual=app.qrCode(text_input='Hello, world! 123').apply_masking_to_data(masking_pattern='010')
+        actual=app.qrCode(text_input='Hello, world! 123', ecc_level='low').apply_masking_to_data(masking_pattern='010')
         expected=[
             ['#', '#', '#', '#', '#', '#', '#', ' ', ' ', '#', ' ', '#', ' ', ' ', '#', '#', '#', '#', '#', '#', '#'],
             ['#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', '#', '#', ' ', '#', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#'],
@@ -524,7 +524,7 @@ class testQrCode(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_apply_masking_to_data_100(self):
-        actual=app.qrCode(text_input='Hello, world! 123').apply_masking_to_data(masking_pattern='100')
+        actual=app.qrCode(text_input='Hello, world! 123', ecc_level='low').apply_masking_to_data(masking_pattern='100')
         expected=[
             ['#', '#', '#', '#', '#', '#', '#', ' ', ' ', '#', ' ', '#', ' ', ' ', '#', '#', '#', '#', '#', '#', '#'],
             ['#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', '#', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#'],
@@ -552,7 +552,7 @@ class testQrCode(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_apply_masking_to_data_011(self):
-        actual=app.qrCode(text_input='Hello, world! 123').apply_masking_to_data(masking_pattern='011')
+        actual=app.qrCode(text_input='Hello, world! 123', ecc_level='low').apply_masking_to_data(masking_pattern='011')
         expected=[
             ['#', '#', '#', '#', '#', '#', '#', ' ', ' ', ' ', ' ', '#', ' ', ' ', '#', '#', '#', '#', '#', '#', '#'],
             ['#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#'],
@@ -580,7 +580,7 @@ class testQrCode(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_apply_masking_to_data_101(self):
-        actual=app.qrCode(text_input='Hello, world! 123').apply_masking_to_data(masking_pattern='101')
+        actual=app.qrCode(text_input='Hello, world! 123', ecc_level='low').apply_masking_to_data(masking_pattern='101')
         expected=[
             ['#', '#', '#', '#', '#', '#', '#', ' ', ' ', '#', '#', ' ', ' ', ' ', '#', '#', '#', '#', '#', '#', '#'],
             ['#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#'],
@@ -608,7 +608,7 @@ class testQrCode(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_apply_masking_to_data_110(self):
-        actual=app.qrCode(text_input='Hello, world! 123').apply_masking_to_data(masking_pattern='110')
+        actual=app.qrCode(text_input='Hello, world! 123', ecc_level='low').apply_masking_to_data(masking_pattern='110')
         expected=[
             ['#', '#', '#', '#', '#', '#', '#', ' ', ' ', '#', '#', ' ', ' ', ' ', '#', '#', '#', '#', '#', '#', '#'],
             ['#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#'],
@@ -636,7 +636,7 @@ class testQrCode(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_apply_masking_to_data_111(self):
-        actual=app.qrCode(text_input='Hello, world! 123').apply_masking_to_data(masking_pattern='111')
+        actual=app.qrCode(text_input='Hello, world! 123', ecc_level='low').apply_masking_to_data(masking_pattern='111')
         expected=[
             ['#', '#', '#', '#', '#', '#', '#', ' ', ' ', ' ', '#', '#', ' ', ' ', '#', '#', '#', '#', '#', '#', '#'],
             ['#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', '#', ' ', '#', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#'],
