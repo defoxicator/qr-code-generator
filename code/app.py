@@ -386,10 +386,24 @@ class qrCode(userInput):
             'quartile': '11',
             'high': '10'
         }
-    
+        generator_polynominal='10100110111'
         concat:str=ecc_encoding[self.ecc_level]+masking_pattern
+        format_bits_list:list=[]
 
-        return concat
+        # while len(concat)<15:
+        #     concat=concat+'0'
+
+        concat='011000000000000'
+        while concat[0]=='0':
+            concat=concat[1:]
+
+        #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+
+        elo=int(concat, 2)^int(generator_polynominal, 2)
+        
+
+        return bin(elo)[2:]
+    
 
     def draw_format_bits(self):
         ...
