@@ -553,6 +553,15 @@ class qrCode(userInput):
 
         # Second condition
         # Two by two blocks of same symbols
+        for row_index in range(len(structure)-1):
+            for column_index in range(len(structure[0])-1):
+                cell_1=structure[row_index][column_index]
+                cell_2=structure[row_index+1][column_index]
+                cell_3=structure[row_index][column_index+1]
+                cell_4=structure[row_index+1][column_index+1]
+
+                if cell_1 == cell_2 == cell_3 == cell_4:
+                    penalty_count+=3
 
         return penalty_count
     
@@ -621,4 +630,4 @@ class qrCode(userInput):
     
     
 if __name__ == '__main__':
-    print(qrCode(text_input='Hello, world! 123').calculate_penalty())
+    print(qrCode(text_input='Hello, world! 123').calculate_penalty_second())
