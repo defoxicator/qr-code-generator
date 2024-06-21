@@ -452,15 +452,42 @@ class qrCode(userInput):
         return masked
 
     def draw_format_bits(self):
-        structure:list=self.apply_masking_to_data
+        structure:list=self.apply_masking_to_data()
+        binary_format_bits=self.format_bits()
+        format_bits:str=''
+
+        for i in range(len(binary_format_bits)):
+            format_bits=format_bits+'#' if binary_format_bits[0]=='1' else format_bits+' '
+            binary_format_bits=binary_format_bits[1:]
+
         # Split format bits string in half
+        bottom_left_format_bits:str=format_bits[0:7]
+        top_right_format_bits:str=format_bits[7:15]
+
         # Apply first half to bottom left
+        for row in range(len(structure)-1, -1, -1):
+            if row > len(structure)-8:
+                structure[row][8]=bottom_left_format_bits[0]
+                bottom_left_format_bits=bottom_left_format_bits[1:]
+
         # Apply second half to top right
+        for column in range(len(structure[0])-1, -1, -1):
+            if column > len(structure)-9:
+                structure[8][column]=top_right_format_bits[-1]
+                top_right_format_bits=top_right_format_bits[:-1]
+
         # Apply full length to top left
+        for column in range(len(structure[0])):
+            if column < 8 and column != 6:
+                structure[8][column]=format_bits[0]
+                format_bits=format_bits[1:]
 
-        # retunr
-        ...
+        for row in range(len(structure)-1, -1, -1):
+            if row < 9 and row != 6:
+                structure[row][8]=format_bits[0]
+                format_bits=format_bits[1:]
 
+        return structure
 
     # Apply the best mask
     def draw_masking(self):
@@ -468,14 +495,14 @@ class qrCode(userInput):
 
     # Present final QR Code in Version 1
     def print_qr_code(self):
-        # combined=self.apply_masking_to_data(masking_pattern='000')
-        # qr_code:str=''
-        # for row in range(len(combined)):
-        #     for column in combined[row]:
-        #         qr_code=qr_code+' '+column
-        #     qr_code=qr_code+'\n'     
+        combined=self.draw_format_bits()
+        qr_code:str=''
+        for row in range(len(combined)):
+            for column in combined[row]:
+                qr_code=qr_code+' '+column
+            qr_code=qr_code+'\n'     
 
-        # print(qr_code)
+        print(qr_code)
         ...
 # STEP 6.
 # Draw codewords and remainder
@@ -497,4 +524,4 @@ class qrCode(userInput):
 # right towards top and then to the left
 
 if __name__ == '__main__':
-    print(qrCode(text_input='Hello, world! 123', masking_pattern='011').apply_masking_to_data())
+    print(qrCode(text_input='Hello, world! 123', masking_pattern='100').print_qr_code())
