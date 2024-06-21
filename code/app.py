@@ -195,7 +195,8 @@ class layout:
 
 class qrCode(userInput):
     def __init__(self, text_input:str=None, encoding_type:str='byte', size:int=21, ecc_level:str='low', masking_pattern:str='000'):
-        super().__init__(text_input=text_input)
+        self.text_input=text_input
+        super().__init__(text_input=self.text_input)
         self.encoding_type=encoding_type
         self.size=size
         self.character_count:int=len(self.analyze_input(
@@ -203,6 +204,14 @@ class qrCode(userInput):
         ))
         self.ecc_level=ecc_level
         self.masking_pattern=masking_pattern
+
+    def is_callable(self, method_input):
+        if callable(method_input):
+            structure=method_input(self)
+        else:
+            structure=method_input
+
+        return structure
 
         # Get data from user input and add to it the encoding bits and count
     def concatenate_data(self, encoding_type:str='byte'):
@@ -419,7 +428,7 @@ class qrCode(userInput):
             ('low', '010'): '111110110101010',
             ('low', '100'): '111100010011101',
             ('low', '011'): '110011000101111',
-            ('low', '101'): '10001100011000',
+            ('low', '101'): '110001100011000',
             ('low', '110'): '110110001000001',
             ('low', '111'): '110100101110110',
             ('medium', '000'): '101010000010010',
@@ -474,7 +483,7 @@ class qrCode(userInput):
         for column in range(len(structure[0])-1, -1, -1):
             if column > len(structure)-9:
                 structure[8][column]=top_right_format_bits[-1]
-                top_right_format_bits=top_right_format_bits[:-1]
+                top_right_format_bits=top_right_format_bits[:-1]      
 
         # Apply full length to top left
         for column in range(len(structure[0])):
@@ -489,9 +498,115 @@ class qrCode(userInput):
 
         return structure
 
-    # Apply the best mask
-    def draw_masking(self):
-        ...
+    def calculate_penalty_first(self, method_input=draw_format_bits):
+        structure=self.is_callable(method_input=method_input)
+        penalty_count:int=0
+
+        # First condition
+        # Penalty count + 3 for each row of five and +1 for each additional
+        # Five or more of same symbols in a row
+        for row in structure:
+            actual_cell:str=''
+            last_cell:str=''
+            count:int=0
+
+            for cell in row:
+                actual_cell:str=cell
+
+                if actual_cell==last_cell:
+                    count+=1
+                else:
+                    count=1
+                
+                last_cell=actual_cell
+
+                if count==5:
+                    penalty_count+=3
+                elif count>5:
+                    penalty_count+=1
+
+        # Five or more of same symbols in a column
+        for column_index in range(len(structure[0])):
+            actual_cell:str=''
+            last_cell:str=''
+            count:int=0
+
+            for row_index in range(len(structure)):
+                actual_cell=structure[row_index][column_index]
+                if actual_cell==last_cell:
+                    count+=1
+                else:
+                    count=1
+                
+                last_cell=actual_cell
+
+                if count==5:
+                    penalty_count+=3
+                elif count>5:
+                    penalty_count+=1
+
+        return penalty_count
+
+    def calculate_penalty_second(self, method_input=draw_format_bits):
+        structure=self.is_callable(method_input=method_input)
+        penalty_count:int=0
+
+        # Second condition
+        # Two by two blocks of same symbols
+
+        return penalty_count
+    
+    def calculate_penalty_third(self, method_input=draw_format_bits):
+        structure=self.is_callable(method_input=method_input)
+        penalty_count:int=0
+
+        # Third condition
+        # 'Finder pattern'-like symbols
+
+        return penalty_count
+
+    def calculate_penalty_fourth(self, method_input=draw_format_bits):
+        structure=self.is_callable(method_input=method_input)
+        penalty_count:int=0
+
+        # Fourth condition
+        # Dark to light ratio
+
+        return penalty_count
+
+    def calculate_penalty(self):
+        possible_masks:dict={
+            '000':0,
+            '001':1,
+            '010':2,
+            '100':3,
+            '011':4,
+            '101':5,
+            '110':6,
+            '111':7
+        }
+        penalty_dict:dict={}
+
+        for mask in possible_masks.keys():
+            inner_call=qrCode(text_input=self.text_input, encoding_type=self.encoding_type, size=self.size, ecc_level=self.ecc_level, masking_pattern=mask)
+            structure:list=inner_call.draw_format_bits()
+            penalty_count:int=0
+
+            # First condition
+            penalty_count+=self.calculate_penalty_first(method_input=structure)
+
+            # Second condition
+            penalty_count+=self.calculate_penalty_second(method_input=structure)
+
+            # Third condition
+            penalty_count+=self.calculate_penalty_third(method_input=structure)
+
+            # Fourth condition
+            penalty_count+=self.calculate_penalty_fourth(method_input=structure)
+
+            penalty_dict[possible_masks[mask]]=penalty_count
+
+        return penalty_dict
 
     # Present final QR Code in Version 1
     def print_qr_code(self):
@@ -502,26 +617,8 @@ class qrCode(userInput):
                 qr_code=qr_code+' '+column
             qr_code=qr_code+'\n'     
 
-        print(qr_code)
-        ...
-# STEP 6.
-# Draw codewords and remainder
-
-# STEP 7.
-# Try applying the masks
-
-# STEP 8.
-# Find penalty patterns
-
-# STEP 9.
-# Calculate penalty points, select best mask
-
-# QR code could be displayed in terminal using # and SPACE
-
-
-
-# Zig-zag pattern for generating the QR code is starting from bottom 
-# right towards top and then to the left
-
+        return qr_code
+    
+    
 if __name__ == '__main__':
-    print(qrCode(text_input='Hello, world! 123', masking_pattern='100').print_qr_code())
+    print(qrCode(text_input='Hello, world! 123').calculate_penalty())

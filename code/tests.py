@@ -691,5 +691,140 @@ class testQrCode(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
+    def test_calculate_penalty_first(self):
+        possible_masks:dict={
+            '000':0,
+            '001':1,
+            '010':2,
+            '100':3,
+            '011':4,
+            '101':5,
+            '110':6,
+            '111':7
+        }
+        penalty_dict:dict={}
+
+        for mask in possible_masks.keys():
+            penalty_dict[possible_masks[mask]]=app.qrCode(text_input='Hello, world! 123', ecc_level='low', masking_pattern=mask).calculate_penalty_first()
+        
+        actual:dict=penalty_dict
+        expected={
+            0:205,
+            1:187,
+            2:173,
+            3:167,
+            4:195,
+            5:181,
+            6:183,
+            7:183
+        }
+
+        self.assertEqual(actual, expected)
+
+    def test_calculate_penalty_second(self):
+        possible_masks:dict={
+            '000':0,
+            '001':1,
+            '010':2,
+            '100':3,
+            '011':4,
+            '101':5,
+            '110':6,
+            '111':7
+        }
+        penalty_dict:dict={}
+
+        for mask in possible_masks.keys():
+            penalty_dict[possible_masks[mask]]=app.qrCode(text_input='Hello, world! 123', ecc_level='low', masking_pattern=mask).calculate_penalty_second()
+        
+        actual:dict=penalty_dict
+        expected={
+            0:159,
+            1:147,
+            2:111,
+            3:114,
+            4:126,
+            5:159,
+            6:126,
+            7:114
+        }
+
+        self.assertEqual(actual, expected)
+
+    def test_calculate_penalty_third(self):
+        possible_masks:dict={
+            '000':0,
+            '001':1,
+            '010':2,
+            '100':3,
+            '011':4,
+            '101':5,
+            '110':6,
+            '111':7
+        }
+        penalty_dict:dict={}
+
+        for mask in possible_masks.keys():
+            penalty_dict[possible_masks[mask]]=app.qrCode(text_input='Hello, world! 123', ecc_level='low', masking_pattern=mask).calculate_penalty_third()
+        
+        actual:dict=penalty_dict
+        expected={
+            0:840,
+            1:800,
+            2:800,
+            3:800,
+            4:800,
+            5:760,
+            6:880,
+            7:840
+        }
+
+        self.assertEqual(actual, expected)
+
+    def test_calculate_penalty_fourth(self):
+        possible_masks:dict={
+            '000':0,
+            '001':1,
+            '010':2,
+            '100':3,
+            '011':4,
+            '101':5,
+            '110':6,
+            '111':7
+        }
+        penalty_dict:dict={}
+
+        for mask in possible_masks.keys():
+            penalty_dict[possible_masks[mask]]=app.qrCode(text_input='Hello, world! 123', ecc_level='low', masking_pattern=mask).calculate_penalty_fourth()
+        
+        actual:dict=penalty_dict
+        expected={
+            0:0,
+            1:0,
+            2:0,
+            3:0,
+            4:0,
+            5:0,
+            6:0,
+            7:0
+        }
+
+        self.assertEqual(actual, expected)
+
+    def test_calculate_penalty(self):
+        actual:dict=app.qrCode(text_input='Hello, world! 123', ecc_level='low').calculate_penalty()
+        expected:dict={
+            0:1204,
+            1:1134,
+            2:1084,
+            3:1081,
+            4:1121,
+            5:1100,
+            6:1189,
+            7:1137
+        }
+
+        self.assertEqual(actual, expected)
+
 if __name__ == '__main__':
     unittest.main()
