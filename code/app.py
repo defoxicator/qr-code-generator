@@ -1,4 +1,5 @@
 import reedsolo
+from collections import Counter
 
 class userInput:
     def __init__(self, text_input:str=None):
@@ -567,19 +568,53 @@ class qrCode(userInput):
     
     def calculate_penalty_third(self, method_input=draw_format_bits):
         structure=self.is_callable(method_input=method_input)
+
+
         penalty_count:int=0
+        penalty_pattern_1:list=['#', ' ', '#', '#', '#', ' ', '#', ' ', ' ', ' ', ' ']
+        penalty_pattern_2:list=[' ', ' ', ' ', ' ', '#', ' ', '#', '#', '#', ' ', '#']
+        lists_to_check:list=[]
 
         # Third condition
         # 'Finder pattern'-like symbols
+        for row_index in range(len(structure)):
+            for column_index in range(len(structure[row_index])):
+                if column_index+10 < self.size:
+                    lists_to_check.append(structure[row_index][column_index:column_index+11])
 
+        for column_index in range(len(structure[0])):
+            for row_index in range(len(structure)):
+                if row_index+10 < self.size:
+                    column_list=[structure[i][column_index] for i in range(row_index, row_index+11)]
+                    lists_to_check.append(column_list)
+
+        print(len(lists_to_check))
+        for check in lists_to_check:
+            print(check)
+            if check==penalty_pattern_1:
+                penalty_count+=40
+            
+            if check==penalty_pattern_2:
+                penalty_count+=40
+            print(penalty_count)
         return penalty_count
 
     def calculate_penalty_fourth(self, method_input=draw_format_bits):
         structure=self.is_callable(method_input=method_input)
-        penalty_count:int=0
+        dark_count:int=0
+        total_count:int=0
 
         # Fourth condition
         # Dark to light ratio
+        for row_index in range(len(structure)):
+            count=Counter(structure[row_index])
+            dark_count+=count['#']
+            total_count+=(count['#']+count[' '])
+
+        percent_count=(dark_count/total_count)*100
+        small_percent_count=abs(percent_count//5*5-50)
+        large_percent_count=abs(percent_count//5*5+5-50)
+        penalty_count=int(min(small_percent_count, large_percent_count))
 
         return penalty_count
 
@@ -630,4 +665,4 @@ class qrCode(userInput):
     
     
 if __name__ == '__main__':
-    print(qrCode(text_input='Hello, world! 123').calculate_penalty_second())
+    print(qrCode(text_input='Hello, world! 123').calculate_penalty_third())
