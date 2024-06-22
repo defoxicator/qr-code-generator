@@ -189,13 +189,12 @@ class layout:
         for row in range(len(combined)):
             for column in combined[row]:
                 qr_code=qr_code+' '+column
-            qr_code=qr_code+'\n'     
+            qr_code=qr_code+'\n'
 
-        print(qr_code)           
-
+        return qr_code
 
 class qrCode(userInput):
-    def __init__(self, text_input:str=None, encoding_type:str='byte', size:int=21, ecc_level:str='low', masking_pattern:str='000'):
+    def __init__(self, text_input:str=None, encoding_type:str='byte', size:int=21, ecc_level:str='low', masking_pattern:int=None):
         self.text_input=text_input
         super().__init__(text_input=self.text_input)
         self.encoding_type=encoding_type
@@ -205,6 +204,16 @@ class qrCode(userInput):
         ))
         self.ecc_level=ecc_level
         self.masking_pattern=masking_pattern
+        self.possible_masks:dict={
+            0:'000',
+            1:'001',
+            2:'010',
+            3:'100',
+            4:'011',
+            5:'101',
+            6:'110',
+            7:'111'
+        }
 
     def is_callable(self, method_input):
         if callable(method_input):
@@ -348,14 +357,14 @@ class qrCode(userInput):
         # i - horizontal
         # j - vertical
         masking_patterns:dict={
-            '000': (i+j)%2==0,
-            '001': i%2==0,
-            '010': j%3==0,
-            '100': (i+j)%3==0,
-            '011': (int(i/2) + int(j/3))%2==0,
-            '101': (i*j)%2+(i*j)%3==0,
-            '110': ((i*j)%3+i*j)%2==0,
-            '111': ((i*j)%3+i+j)%2==0
+            0: (i+j)%2==0,
+            1: i%2==0,
+            2: j%3==0,
+            3: (i+j)%3==0,
+            4: (int(i/2) + int(j/3))%2==0,
+            5: (i*j)%2+(i*j)%3==0,
+            6: ((i*j)%3+i*j)%2==0,
+            7: ((i*j)%3+i+j)%2==0
         }
 
         return masking_patterns[self.masking_pattern]
@@ -424,38 +433,38 @@ class qrCode(userInput):
 
     def format_bits(self):
         format_bits_masked:dict={
-            ('low', '000'): '111011111000100',
-            ('low', '001'):	'111001011110011',
-            ('low', '010'): '111110110101010',
-            ('low', '100'): '111100010011101',
-            ('low', '011'): '110011000101111',
-            ('low', '101'): '110001100011000',
-            ('low', '110'): '110110001000001',
-            ('low', '111'): '110100101110110',
-            ('medium', '000'): '101010000010010',
-            ('medium', '001'): '101000100100101',
-            ('medium', '010'): '101111001111100',
-            ('medium', '100'): '101101101001011',
-            ('medium', '011'): '100010111111001',
-            ('medium', '101'): '100000011001110',
-            ('medium', '110'): '100111110010111',
-            ('medium', '111'): '100101010100000',
-            ('quartile', '000'): '011010101011111',
-            ('quartile', '001'): '011000001101000',
-            ('quartile', '010'): '011111100110001',
-            ('quartile', '100'): '011101000000110',
-            ('quartile', '011'): '010010010110100',
-            ('quartile', '101'): '010000110000011',
-            ('quartile', '110'): '010111011011010',
-            ('quartile', '111'): '010101111101101',
-            ('high', '000'): '001011010001001',
-            ('high', '001'): '001001110111110',
-            ('high', '010'): '001110011100111',
-            ('high', '100'): '001100111010000',
-            ('high', '011'): '000011101100010',
-            ('high', '101'): '000001001010101',
-            ('high', '110'): '000110100001100',
-            ('high', '111'): '000100000111011'
+            ('low', 0): '111011111000100',
+            ('low', 1):	'111001011110011',
+            ('low', 2): '111110110101010',
+            ('low', 3): '111100010011101',
+            ('low', 4): '110011000101111',
+            ('low', 5): '110001100011000',
+            ('low', 6): '110110001000001',
+            ('low', 7): '110100101110110',
+            ('medium', 0): '101010000010010',
+            ('medium', 1): '101000100100101',
+            ('medium', 2): '101111001111100',
+            ('medium', 3): '101101101001011',
+            ('medium', 4): '100010111111001',
+            ('medium', 5): '100000011001110',
+            ('medium', 6): '100111110010111',
+            ('medium', 7): '100101010100000',
+            ('quartile', 0): '011010101011111',
+            ('quartile', 1): '011000001101000',
+            ('quartile', 2): '011111100110001',
+            ('quartile', 3): '011101000000110',
+            ('quartile', 4): '010010010110100',
+            ('quartile', 5): '010000110000011',
+            ('quartile', 6): '010111011011010',
+            ('quartile', 7): '010101111101101',
+            ('high', 0): '001011010001001',
+            ('high', 1): '001001110111110',
+            ('high', 2): '001110011100111',
+            ('high', 3): '001100111010000',
+            ('high', 4): '000011101100010',
+            ('high', 5): '000001001010101',
+            ('high', 6): '000110100001100',
+            ('high', 7): '000100000111011'
         }
         masked:str=format_bits_masked[self.ecc_level, self.masking_pattern]
 
@@ -569,7 +578,6 @@ class qrCode(userInput):
     def calculate_penalty_third(self, method_input=draw_format_bits):
         structure=self.is_callable(method_input=method_input)
 
-
         penalty_count:int=0
         penalty_pattern_1:list=['#', ' ', '#', '#', '#', ' ', '#', ' ', ' ', ' ', ' ']
         penalty_pattern_2:list=[' ', ' ', ' ', ' ', '#', ' ', '#', '#', '#', ' ', '#']
@@ -588,15 +596,13 @@ class qrCode(userInput):
                     column_list=[structure[i][column_index] for i in range(row_index, row_index+11)]
                     lists_to_check.append(column_list)
 
-        print(len(lists_to_check))
         for check in lists_to_check:
-            print(check)
             if check==penalty_pattern_1:
                 penalty_count+=40
             
             if check==penalty_pattern_2:
                 penalty_count+=40
-            print(penalty_count)
+
         return penalty_count
 
     def calculate_penalty_fourth(self, method_input=draw_format_bits):
@@ -619,19 +625,9 @@ class qrCode(userInput):
         return penalty_count
 
     def calculate_penalty(self):
-        possible_masks:dict={
-            '000':0,
-            '001':1,
-            '010':2,
-            '100':3,
-            '011':4,
-            '101':5,
-            '110':6,
-            '111':7
-        }
         penalty_dict:dict={}
 
-        for mask in possible_masks.keys():
+        for mask in self.possible_masks.keys():
             inner_call=qrCode(text_input=self.text_input, encoding_type=self.encoding_type, size=self.size, ecc_level=self.ecc_level, masking_pattern=mask)
             structure:list=inner_call.draw_format_bits()
             penalty_count:int=0
@@ -648,14 +644,24 @@ class qrCode(userInput):
             # Fourth condition
             penalty_count+=self.calculate_penalty_fourth(method_input=structure)
 
-            penalty_dict[possible_masks[mask]]=penalty_count
+            penalty_dict[penalty_count]=mask
 
         return penalty_dict
 
     # Present final QR Code in Version 1
     def print_qr_code(self):
-        combined=self.draw_format_bits()
+        penalty_counts=self.calculate_penalty()
         qr_code:str=''
+
+        if self.masking_pattern==None:
+            selected_mask=penalty_counts[min(penalty_counts)]
+            inner_call=qrCode(text_input=self.text_input, encoding_type=self.encoding_type, size=self.size, ecc_level=self.ecc_level, masking_pattern=selected_mask)
+            qr_code=qr_code+'Selected mask = '+str(selected_mask)+'\n\n'
+        else:
+            inner_call=qrCode(text_input=self.text_input, encoding_type=self.encoding_type, size=self.size, ecc_level=self.ecc_level, masking_pattern=self.masking_pattern)
+            qr_code=qr_code+'Selected mask = '+str(self.masking_pattern)+'\n\n'
+
+        combined=inner_call.draw_format_bits()
         for row in range(len(combined)):
             for column in combined[row]:
                 qr_code=qr_code+' '+column
@@ -663,6 +669,5 @@ class qrCode(userInput):
 
         return qr_code
     
-    
 if __name__ == '__main__':
-    print(qrCode(text_input='Hello, world! 123').calculate_penalty_third())
+    print(qrCode().print_qr_code())
