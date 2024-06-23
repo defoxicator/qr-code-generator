@@ -1,14 +1,14 @@
 import reedsolo
 from collections import Counter
 
-class userInput:
+class UserInput:
     def __init__(self, text_input:str=None):
 
         if text_input is None:
             self.text_input=input('Please insert text that should be\
 converted to QR Code (max 17 characters):\n> ')
             if len(self.text_input) > 17:
-                raise Exception('Sorry, no more characters than 17.')
+                raise ValueError('Sorry, no more characters than 17.')
         else:
             self.text_input=text_input
 
@@ -38,7 +38,7 @@ converted to QR Code (max 17 characters):\n> ')
 
         return data_bits
 
-class layout:
+class Layout:
     def __init__(self, size:int=21):
         self.size=size
 
@@ -193,7 +193,7 @@ class layout:
 
         return qr_code
 
-class qrCode(userInput):
+class qrCode(UserInput):
     def __init__(self, text_input:str=None, encoding_type:str='byte',
                  size:int=21, ecc_level:str='low', masking_pattern:int=None):
         self.text_input=text_input
@@ -249,7 +249,10 @@ class qrCode(userInput):
             for i in range(17-self.character_count):
                 padding:str=padding+padding_list[i%2]
 
-        concat:str=encoding_type_dict[encoding_type]+character_count_binary+self.input_to_data_bits()+terminator+padding
+        encoding:str=encoding_type_dict[encoding_type]
+        encoding_character_count:str=character_count_binary
+        encoding_input:str=self.input_to_data_bits()
+        concat:str=encoding+encoding_character_count+encoding_input+terminator+padding
 
         return concat
 
@@ -314,7 +317,7 @@ class qrCode(userInput):
 
     def zig_zag_pattern(self):
         zig_zag:list=[]
-        boundaries=layout(size=self.size).combine_qr_code_layout()
+        boundaries=Layout(size=self.size).combine_qr_code_layout()
 
         def direction_pattern(column:int, direction:str):
             directions:dict={
@@ -343,7 +346,7 @@ class qrCode(userInput):
 
     # Draw concatenated data with needed bits to the QR Code
     def draw_data(self):
-        drawing=layout(size=self.size).combine_qr_code_layout()
+        drawing=Layout(size=self.size).combine_qr_code_layout()
         data=self.add_ecc_to_concatenated_data()
         zig_zag=self.zig_zag_pattern()
 
@@ -629,7 +632,11 @@ class qrCode(userInput):
         penalty_dict:dict={}
 
         for mask in self.possible_masks.keys():
-            inner_call=qrCode(text_input=self.text_input, encoding_type=self.encoding_type, size=self.size, ecc_level=self.ecc_level, masking_pattern=mask)
+            inner_call=qrCode(text_input=self.text_input,
+                              encoding_type=self.encoding_type,
+                              size=self.size,
+                              ecc_level=self.ecc_level,
+                              masking_pattern=mask)
             structure:list=inner_call.draw_format_bits()
             penalty_count:int=0
 
@@ -656,17 +663,25 @@ class qrCode(userInput):
 
         if self.masking_pattern==None:
             selected_mask=penalty_counts[min(penalty_counts)]
-            inner_call=qrCode(text_input=self.text_input, encoding_type=self.encoding_type, size=self.size, ecc_level=self.ecc_level, masking_pattern=selected_mask)
+            inner_call=qrCode(text_input=self.text_input,
+                              encoding_type=self.encoding_type,
+                              size=self.size,
+                              ecc_level=self.ecc_level,
+                              masking_pattern=selected_mask)
             qr_code=qr_code+'Selected mask = '+str(selected_mask)+'\n\n'
         else:
-            inner_call=qrCode(text_input=self.text_input, encoding_type=self.encoding_type, size=self.size, ecc_level=self.ecc_level, masking_pattern=self.masking_pattern)
+            inner_call=qrCode(text_input=self.text_input,
+                              encoding_type=self.encoding_type,
+                              size=self.size,
+                              ecc_level=self.ecc_level,
+                              masking_pattern=self.masking_pattern)
             qr_code=qr_code+'Selected mask = '+str(self.masking_pattern)+'\n\n'
 
         combined=inner_call.draw_format_bits()
         for row in range(len(combined)):
             for column in combined[row]:
                 qr_code=qr_code+' '+column
-            qr_code=qr_code+'\n'     
+            qr_code=qr_code+'\n'
 
         return qr_code
 

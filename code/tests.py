@@ -1,9 +1,9 @@
 import unittest
 import app
 
-class userInputTest(unittest.TestCase):
+class UserInputTest(unittest.TestCase):
     def test_analyze_input(self):
-        actual=app.userInput(text_input='Hello, world! 123').analyze_input()
+        actual=app.UserInput(text_input='Hello, world! 123').analyze_input()
         expected=[
             {'H': '01001000'},
             {'e': '01100101'},
@@ -27,16 +27,16 @@ class userInputTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_input_to_data_bits(self):
-        actual=app.userInput(
+        actual=app.UserInput(
             text_input='Hello world!123'
         ).input_to_data_bits()
         expected:str='010010000110010101101100011011000110111100100000011101110110111101110010011011000110010000100001001100010011001000110011'
 
         self.assertEqual(actual, expected)
 
-class layoutTest(unittest.TestCase):
+class LayoutTest(unittest.TestCase):
     def test_boundaries(self):
-        actual=app.layout(size=21).generate_boundaries()
+        actual=app.Layout(size=21).generate_boundaries()
         expected=[
             ['@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@'],
             ['@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@'],
@@ -64,13 +64,13 @@ class layoutTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_timing_pattern(self):
-        actual=app.layout(size=21).timing_pattern()
+        actual=app.Layout(size=21).timing_pattern()
         expected=['#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#']
 
         self.assertEqual(actual, expected)
 
     def test_draw_timing_pattern(self):
-        actual=app.layout(size=21).draw_timing_pattern()
+        actual=app.Layout(size=21).draw_timing_pattern()
         expected=[
             ['@', '@', '@', '@', '@', '@', '#', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@'],
             ['@', '@', '@', '@', '@', '@', ' ', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@'],
@@ -98,7 +98,7 @@ class layoutTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_one_finding_pattern_top_left(self):
-        actual=app.layout().one_finding_pattern(vertical='top', horizontal='left')
+        actual=app.Layout().one_finding_pattern(vertical='top', horizontal='left')
         expected=[
             ['#', '#', '#', '#', '#', '#', '#', ' '],
             ['#', ' ', ' ', ' ', ' ', ' ', '#', ' '],
@@ -114,7 +114,7 @@ class layoutTest(unittest.TestCase):
 
     
     def test_one_finding_pattern_top_right(self):
-        actual=app.layout().one_finding_pattern(
+        actual=app.Layout().one_finding_pattern(
             vertical='top', horizontal='right'
         )
         expected=[
@@ -132,7 +132,7 @@ class layoutTest(unittest.TestCase):
 
     
     def test_one_finding_pattern_bottom_left(self):
-        actual=app.layout().one_finding_pattern(
+        actual=app.Layout().one_finding_pattern(
             vertical='bottom', horizontal='left'
         )
         expected=[
@@ -149,7 +149,7 @@ class layoutTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_draw_finding_pattern(self):
-        actual=app.layout(size=21).draw_finding_pattern()
+        actual=app.Layout(size=21).draw_finding_pattern()
         expected=[
             ['#', '#', '#', '#', '#', '#', '#', ' ', '@', '@', '@', '@', '@', ' ', '#', '#', '#', '#', '#', '#', '#'],
             ['#', ' ', ' ', ' ', ' ', ' ', '#', ' ', '@', '@', '@', '@', '@', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#'],
@@ -177,7 +177,7 @@ class layoutTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_draw_dummy_format_bits(self):
-        actual=app.layout(size=21).draw_dummy_format_bits()
+        actual=app.Layout(size=21).draw_dummy_format_bits()
         expected=[
             ['@', '@', '@', '@', '@', '@', '@', '@', ' ', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@'],
             ['@', '@', '@', '@', '@', '@', '@', '@', ' ', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@', '@'],
@@ -205,7 +205,7 @@ class layoutTest(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_combine_qr_code_layout(self):
-        actual=app.layout().combine_qr_code_layout()
+        actual=app.Layout().combine_qr_code_layout()
         expected=[
             ['#', '#', '#', '#', '#', '#', '#', ' ', ' ', '@', '@', '@', '@', ' ', '#', '#', '#', '#', '#', '#', '#'],
             ['#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', '@', '@', '@', '@', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#'],
