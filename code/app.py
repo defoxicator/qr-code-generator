@@ -281,6 +281,10 @@ class QRCode(UserInput):
         }
 
     def _is_callable(self, method_input):
+        '''
+        This is a helper method to check if the argument is callable and
+        if not then it is preparing it to run it.
+        '''
         if callable(method_input):
             structure=method_input(self)
         else:
@@ -288,8 +292,11 @@ class QRCode(UserInput):
 
         return structure
 
-        # Get data from user input and add to it the encoding bits and count
     def concatenate_data(self, encoding_type:str='byte'):
+        '''
+        This method is getting data from user input and adding to it the
+        encoding bits and count.
+        '''
         encoding_type_dict:dict={
             'numeric': '0001',
             'alphanumeric': '0010',
@@ -321,6 +328,9 @@ class QRCode(UserInput):
         return concat
 
     def split_blocks(self):
+        '''
+        This method is splitting the bits into bytes.
+        '''
         binary_string_data:str=self.concatenate_data()
 
         # Split blocks to bytes (8 bits)
@@ -336,8 +346,11 @@ class QRCode(UserInput):
 
         return hexadecimal_codewords
 
-    # Use library with Reed-Solomon error correction codes.
     def error_correction(self):
+        '''
+        This method is using reedsolo library to generate error correction
+        codes with Reed-Solomon algorithm.
+        '''
         ecc_levels:dict={
             'low':0.07, # 7%
             'medium':0.15, # 15%
@@ -363,6 +376,10 @@ class QRCode(UserInput):
         return hexadecimal_ecc
 
     def add_ecc_to_concatenated_data(self):
+        '''
+        This method iis appending error correction codes to the data binary
+        string.
+        '''
         concat=self.concatenate_data()
         hexadecimal_ecc=self.error_correction()
         # binary_ecc=[bin(x) for x in hexadecimal_ecc]
@@ -379,7 +396,11 @@ class QRCode(UserInput):
 
         return concat
 
-    def zig_zag_pattern(self):
+    def _zig_zag_pattern(self):
+        '''
+        This method is generating coordinates of the zig zag pattern that
+        will be used to insert data into respective places in QR Code
+        '''
         zig_zag:list=[]
         boundaries=Layout(size=self.size)._combine_qr_code_layout()
 
@@ -412,7 +433,7 @@ class QRCode(UserInput):
     def draw_data(self):
         drawing=Layout(size=self.size)._combine_qr_code_layout()
         data=self.add_ecc_to_concatenated_data()
-        zig_zag=self.zig_zag_pattern()
+        zig_zag=self._zig_zag_pattern()
 
         for (i,j) in zig_zag:
             drawing[i][j]=' ' if data[0]=='0' else '#'
@@ -445,7 +466,7 @@ class QRCode(UserInput):
         # i - horizontal
         # j - vertical
 
-        zig_zag_pattern=self.zig_zag_pattern()
+        zig_zag_pattern=self._zig_zag_pattern()
         masking:dict={}
         data=self.draw_data()
         masked_data:list=data
