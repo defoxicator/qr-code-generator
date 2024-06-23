@@ -3,6 +3,7 @@ Full application to generate the QR to terminal using # and SPACEs.
 QR Code is generated using byte encoding in Version 1 of the QR Code.
 '''
 from collections import Counter
+
 import reedsolo
 
 class UserInput:
@@ -292,7 +293,7 @@ class QRCode(UserInput):
 
         return structure
 
-    def _concatenate_data(self, encoding_type:str='byte'):
+    def _concatenate_data(self):
         '''
         This method is getting data from user input and adding to it the
         encoding bits and count.
@@ -320,7 +321,7 @@ class QRCode(UserInput):
             for i in range(17-self.character_count):
                 padding:str=padding+padding_list[i%2]
 
-        encoding:str=encoding_type_dict[encoding_type]
+        encoding:str=encoding_type_dict[self.encoding_type]
         encoding_character_count:str=character_count_binary
         encoding_input:str=self.input_to_data_bits()
         concat:str=encoding+encoding_character_count+encoding_input+terminator+padding
@@ -697,10 +698,10 @@ class QRCode(UserInput):
         penalty_pattern_2:list=[' ', ' ', ' ', ' ', '#', ' ', '#', '#', '#', ' ', '#']
         lists_to_check:list=[]
 
-        for (row_index, _) in enumerate(structure):
-            for (column_index, _) in enumerate(structure[row_index]):
+        for (row_index, row) in enumerate(structure):
+            for (column_index, _) in enumerate(row):
                 if column_index+10 < self.size:
-                    lists_to_check.append(structure[row_index][column_index:column_index+11])
+                    lists_to_check.append(row[column_index:column_index+11])
 
         for (column_index, _) in enumerate(structure[0]):
             for (row_index, _) in enumerate(structure):
@@ -726,8 +727,8 @@ class QRCode(UserInput):
         dark_count:int=0
         total_count:int=0
 
-        for (row_index, _) in enumerate(structure):
-            count=Counter(structure[row_index])
+        for (_, row) in enumerate(structure):
+            count=Counter(row)
             dark_count+=count['#']
             total_count+=(count['#']+count[' '])
 
@@ -793,8 +794,8 @@ class QRCode(UserInput):
             qr_code=qr_code+'Selected mask = '+str(self.masking_pattern)+'\n\n'
 
         combined=inner_call.draw_format_bits()
-        for (row, _) in enumerate(combined):
-            for column in combined[row]:
+        for (_, row) in enumerate(combined):
+            for column in row:
                 qr_code=qr_code+' '+column
             qr_code=qr_code+'\n'
 
