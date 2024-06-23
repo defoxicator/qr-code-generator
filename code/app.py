@@ -3,7 +3,6 @@ Full application to generate the QR to terminal using # and SPACEs.
 QR Code is generated using byte encoding in Version 1 of the QR Code.
 '''
 from collections import Counter
-
 import reedsolo
 
 class UserInput:
@@ -15,7 +14,9 @@ class UserInput:
         '''
         This method is initializing the class with user input.
         '''
-        if text_input is None:
+        self.text_input=text_input
+
+        if self.text_input is None:
             self.text_input=input('Please insert text that should be\
 converted to QR Code (max 17 characters):\n> ')
             if len(self.text_input) > 17:
