@@ -2,8 +2,14 @@ import reedsolo
 from collections import Counter
 
 class UserInput:
+    '''
+    This class is used to get the input from the user and encode it to
+    binary format.
+    '''
     def __init__(self, text_input:str=None):
-
+        '''
+        Initializing the class with user input.
+        '''
         if text_input is None:
             self.text_input=input('Please insert text that should be\
 converted to QR Code (max 17 characters):\n> ')
@@ -14,6 +20,9 @@ converted to QR Code (max 17 characters):\n> ')
 
     # As of now only byte encoding will be used
     def analyze_input(self, encoding_type:str='byte'):
+        '''
+        Analysing and encoding the input in byte format.
+        '''
         analyzed_text:list=list()
 
         # Encode unicode characters to binary
