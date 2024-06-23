@@ -82,7 +82,7 @@ class Layout:
 
         return structure
 
-    def _generate_boundaries(self):
+    def generate_boundaries(self):
         '''
         This method is useed to generate the template to build the QR Code
         upon.
@@ -116,7 +116,7 @@ class Layout:
         return row_timing
 
     # Combine timing patterns from template
-    def _draw_timing_pattern(self, method_input=_generate_boundaries):
+    def draw_timing_pattern(self, method_input=generate_boundaries):
         '''
         This method is inserting timing patterns in the template.
         '''
@@ -174,7 +174,7 @@ class Layout:
         return finding_pattern
 
     # Combine finding patterns
-    def _draw_finding_pattern(self, method_input=_generate_boundaries):
+    def draw_finding_pattern(self, method_input=generate_boundaries):
         '''
         This method is combining different finding patterns and inserting
         them in respective places in the template.
@@ -201,7 +201,7 @@ class Layout:
 
         return structure
 
-    def _draw_dummy_format_bits(self, method_input=_generate_boundaries):
+    def draw_dummy_format_bits(self, method_input=generate_boundaries):
         '''
         This method is inserting reserved spots for format bits of QR Code.
         '''
@@ -225,14 +225,14 @@ class Layout:
 
     # Combine the whole layout of QR Code before adding meaningful data
     # to it
-    def _combine_qr_code_layout(self):
+    def combine_qr_code_layout(self):
         '''
         This method is generating the full QR Code template.
         '''
-        combined=self._generate_boundaries()
-        self._draw_timing_pattern(combined)
-        self._draw_finding_pattern(combined)
-        self._draw_dummy_format_bits(combined)
+        combined=self.generate_boundaries()
+        self.draw_timing_pattern(combined)
+        self.draw_finding_pattern(combined)
+        self.draw_dummy_format_bits(combined)
 
         return combined
 
@@ -241,7 +241,7 @@ class Layout:
         '''
         This method is priting the layout / template in a human readable form.
         '''
-        combined=self._combine_qr_code_layout()
+        combined=self.combine_qr_code_layout()
         qr_code:str=''
         for (row, _) in enumerate(combined):
             for column in combined[row]:
@@ -292,7 +292,7 @@ class QRCode(UserInput):
 
         return structure
 
-    def concatenate_data(self, encoding_type:str='byte'):
+    def _concatenate_data(self, encoding_type:str='byte'):
         '''
         This method is getting data from user input and adding to it the
         encoding bits and count.
@@ -327,17 +327,17 @@ class QRCode(UserInput):
 
         return concat
 
-    def split_blocks(self):
+    def _split_blocks(self):
         '''
         This method is splitting the bits into bytes.
         '''
-        binary_string_data:str=self.concatenate_data()
+        binary_string_data:str=self._concatenate_data()
 
         # Split blocks to bytes (8 bits)
         n=8
         binary_codewords:list=[]
         hexadecimal_codewords:list=[]
-        for i in range(round(len(binary_string_data)/n)):
+        for _ in range(round(len(binary_string_data)/n)):
             binary_codewords.append(binary_string_data[:n])
             binary_string_data=binary_string_data[n:]
 
@@ -346,19 +346,19 @@ class QRCode(UserInput):
 
         return hexadecimal_codewords
 
-    def error_correction(self):
+    def _error_correction(self):
         '''
         This method is using reedsolo library to generate error correction
         codes with Reed-Solomon algorithm.
+            
+        Expected ECC:
+            low = 7%
+            medium =  15%
+            quartile = 25%
+            high = 30%
         '''
-        ecc_levels:dict={
-            'low':0.07, # 7%
-            'medium':0.15, # 15%
-            'quartile':0.25, # 25%
-            'high':0.30 # 30%
-        }
 
-        codewords:list=self.split_blocks()
+        codewords:list=self._split_blocks()
         hexadecimal_string:str=''
         for codeword in codewords:
             if len(codeword[2:])<2:
@@ -375,13 +375,13 @@ class QRCode(UserInput):
 
         return hexadecimal_ecc
 
-    def add_ecc_to_concatenated_data(self):
+    def _add_ecc_to_concatenated_data(self):
         '''
         This method iis appending error correction codes to the data binary
         string.
         '''
-        concat=self.concatenate_data()
-        hexadecimal_ecc=self.error_correction()
+        concat=self._concatenate_data()
+        hexadecimal_ecc=self._error_correction()
         # binary_ecc=[bin(x) for x in hexadecimal_ecc]
         binary_ecc=''
 
@@ -402,9 +402,9 @@ class QRCode(UserInput):
         will be used to insert data into respective places in QR Code
         '''
         zig_zag:list=[]
-        boundaries=Layout(size=self.size)._combine_qr_code_layout()
+        boundaries=Layout(size=self.size).combine_qr_code_layout()
 
-        def direction_pattern(column:int, direction:str):
+        def _direction_pattern(column:int, direction:str):
             directions:dict={
                 'up': range(self.size-1, -1, -1),
                 'down': range(self.size)
@@ -420,28 +420,32 @@ class QRCode(UserInput):
         for column in range(self.size-1, -1, -2):
             if column<=0:
                 continue
-            elif column<=6:
+            if column<=6:
                 column=column-1
 
-            direction_pattern(column, direction)
+            _direction_pattern(column, direction)
 
             direction='down' if direction=='up' else 'up'
 
         return zig_zag
 
-    # Draw concatenated data with needed bits to the QR Code
-    def draw_data(self):
-        drawing=Layout(size=self.size)._combine_qr_code_layout()
-        data=self.add_ecc_to_concatenated_data()
+    def _draw_data(self):
+        '''
+        This method is drawing concatenated data to QR Code
+        '''
+        drawing=Layout(size=self.size).combine_qr_code_layout()
+        data=self._add_ecc_to_concatenated_data()
         zig_zag=self._zig_zag_pattern()
-
-        for (i,j) in zig_zag:
+        for (i, j) in zig_zag:
             drawing[i][j]=' ' if data[0]=='0' else '#'
             data=data[1:]
 
         return drawing
 
-    def masking_bool(self, i:int, j:int):
+    def _masking_bool(self, i:int, j:int):
+        '''
+        This is helper method to select masking pattern from a dict
+        '''
         # Masking patterns
         # i - horizontal
         # j - vertical
@@ -461,23 +465,27 @@ class QRCode(UserInput):
     # Get all mask templates under this function and apply every mask to
     # generated QR Code
     # Calculate which mask is most beneficial and select it
-    def apply_masking_to_data(self):
+    def _apply_masking_to_data(self):
+        '''
+        This method is applying masking to the data.
+        '''
         # Masking patterns
         # i - horizontal
         # j - vertical
 
         zig_zag_pattern=self._zig_zag_pattern()
         masking:dict={}
-        data=self.draw_data()
+        data=self._draw_data()
         masked_data:list=data
 
         # Masking data
         for coordinates in zig_zag_pattern:
-            bool=self.masking_bool(i=coordinates[0], j=coordinates[1])
-            masking[coordinates]=bool
+            selected_masking_pattern=self._masking_bool(i=coordinates[0],
+                                                                  j=coordinates[1])
+            masking[coordinates]=selected_masking_pattern
 
-        for coordinates, bool in masking.items():
-            if bool==True:
+        for coordinates, mask_bool in masking.items():
+            if mask_bool is True:
                 if masked_data[coordinates[0]][coordinates[1]]=='#':
                     masked_data[coordinates[0]][coordinates[1]]=' '
                 elif masked_data[coordinates[0]][coordinates[1]]==' ':
@@ -520,7 +528,10 @@ class QRCode(UserInput):
 
     #     return encoded
 
-    def format_bits(self):
+    def _format_bits(self):
+        '''
+        This is helper method to select format bits.
+        '''
         format_bits_masked:dict={
             ('low', 0): '111011111000100',
             ('low', 1):	'111001011110011',
@@ -560,11 +571,14 @@ class QRCode(UserInput):
         return masked
 
     def draw_format_bits(self):
-        structure:list=self.apply_masking_to_data()
-        binary_format_bits=self.format_bits()
+        '''
+        This method is used to draw format bits to QR Code.
+        '''
+        structure:list=self._apply_masking_to_data()
+        binary_format_bits=self._format_bits()
         format_bits:str=''
 
-        for i in range(len(binary_format_bits)):
+        for _ in enumerate(binary_format_bits):
             format_bits=format_bits+'#' if binary_format_bits[0]=='1' else format_bits+' '
             binary_format_bits=binary_format_bits[1:]
 
@@ -597,12 +611,16 @@ class QRCode(UserInput):
 
         return structure
 
-    def calculate_penalty_first(self, method_input=draw_format_bits):
+    def _calculate_penalty_first(self, method_input=draw_format_bits):
+        '''
+        This is helper method to calculate first condition penalty points.
+        First condition is + 3 points for each row or column of five of the
+        same area type (dark / light) and +1 point for each additional beyond
+        that.
+        '''
         structure=self._is_callable(method_input=method_input)
         penalty_count:int=0
 
-        # First condition
-        # Penalty count + 3 for each row of five and +1 for each additional
         # Five or more of same symbols in a row
         for row in structure:
             actual_cell:str=''
@@ -630,7 +648,7 @@ class QRCode(UserInput):
             last_cell:str=''
             count:int=0
 
-            for row_index in range(len(structure)):
+            for (row_index, _) in enumerate(structure):
                 actual_cell=structure[row_index][column_index]
                 if actual_cell==last_cell:
                     count+=1
@@ -646,12 +664,15 @@ class QRCode(UserInput):
 
         return penalty_count
 
-    def calculate_penalty_second(self, method_input=draw_format_bits):
+    def _calculate_penalty_second(self, method_input=draw_format_bits):
+        '''
+        This is helper method to calculate ssecond condition penalty points.
+        Second condition is +3 penalty points for each two by two blocks
+        of the same symbol type (dark / light)
+        '''
         structure=self._is_callable(method_input=method_input)
         penalty_count:int=0
 
-        # Second condition
-        # Two by two blocks of same symbols
         for row_index in range(len(structure)-1):
             for column_index in range(len(structure[0])-1):
                 cell_1=structure[row_index][column_index]
@@ -664,7 +685,11 @@ class QRCode(UserInput):
 
         return penalty_count
 
-    def calculate_penalty_third(self, method_input=draw_format_bits):
+    def _calculate_penalty_third(self, method_input=draw_format_bits):
+        '''
+        This is helper method to calculate ssecond condition penalty points.
+        Third condition is +40 penalty points for 'Finder pattern'-like patterns.
+        '''
         structure=self._is_callable(method_input=method_input)
 
         penalty_count:int=0
@@ -672,15 +697,13 @@ class QRCode(UserInput):
         penalty_pattern_2:list=[' ', ' ', ' ', ' ', '#', ' ', '#', '#', '#', ' ', '#']
         lists_to_check:list=[]
 
-        # Third condition
-        # 'Finder pattern'-like symbols
-        for row_index in range(len(structure)):
-            for column_index in range(len(structure[row_index])):
+        for (row_index, _) in enumerate(structure):
+            for (column_index, _) in enumerate(structure[row_index]):
                 if column_index+10 < self.size:
                     lists_to_check.append(structure[row_index][column_index:column_index+11])
 
-        for column_index in range(len(structure[0])):
-            for row_index in range(len(structure)):
+        for (column_index, _) in enumerate(structure[0]):
+            for (row_index, _) in enumerate(structure):
                 if row_index+10 < self.size:
                     column_list=[structure[i][column_index] for i in range(row_index, row_index+11)]
                     lists_to_check.append(column_list)
@@ -694,14 +717,16 @@ class QRCode(UserInput):
 
         return penalty_count
 
-    def calculate_penalty_fourth(self, method_input=draw_format_bits):
+    def _calculate_penalty_fourth(self, method_input=draw_format_bits):
+        '''
+        This is helper method to calculate ssecond condition penalty points.
+        Fourth condition is dark to light ratio
+        '''
         structure=self._is_callable(method_input=method_input)
         dark_count:int=0
         total_count:int=0
 
-        # Fourth condition
-        # Dark to light ratio
-        for row_index in range(len(structure)):
+        for (row_index, _) in enumerate(structure):
             count=Counter(structure[row_index])
             dark_count+=count['#']
             total_count+=(count['#']+count[' '])
@@ -713,10 +738,13 @@ class QRCode(UserInput):
 
         return penalty_count
 
-    def calculate_penalty(self):
+    def _calculate_penalty(self):
+        '''
+        This method is calculating penalty points based on four conditions.
+        '''
         penalty_dict:dict={}
 
-        for mask in self.possible_masks.keys():
+        for mask in self.possible_masks:
             inner_call=QRCode(text_input=self.text_input,
                               encoding_type=self.encoding_type,
                               size=self.size,
@@ -726,27 +754,29 @@ class QRCode(UserInput):
             penalty_count:int=0
 
             # First condition
-            penalty_count+=self.calculate_penalty_first(method_input=structure)
+            penalty_count+=self._calculate_penalty_first(method_input=structure)
 
             # Second condition
-            penalty_count+=self.calculate_penalty_second(method_input=structure)
+            penalty_count+=self._calculate_penalty_second(method_input=structure)
 
             # Third condition
-            penalty_count+=self.calculate_penalty_third(method_input=structure)
+            penalty_count+=self._calculate_penalty_third(method_input=structure)
 
             # Fourth condition
-            penalty_count+=self.calculate_penalty_fourth(method_input=structure)
+            penalty_count+=self._calculate_penalty_fourth(method_input=structure)
 
             penalty_dict[penalty_count]=mask
 
         return penalty_dict
 
-    # Present final QR Code in Version 1
     def print_qr_code(self):
-        penalty_counts=self.calculate_penalty()
+        '''
+        This method is presenting the final QR Code in Version 1.
+        '''
+        penalty_counts=self._calculate_penalty()
         qr_code:str=''
 
-        if self.masking_pattern==None:
+        if self.masking_pattern is None:
             selected_mask=penalty_counts[min(penalty_counts)]
             inner_call=QRCode(text_input=self.text_input,
                               encoding_type=self.encoding_type,
@@ -763,7 +793,7 @@ class QRCode(UserInput):
             qr_code=qr_code+'Selected mask = '+str(self.masking_pattern)+'\n\n'
 
         combined=inner_call.draw_format_bits()
-        for row in range(len(combined)):
+        for (row, _) in enumerate(combined):
             for column in combined[row]:
                 qr_code=qr_code+' '+column
             qr_code=qr_code+'\n'
