@@ -39,10 +39,10 @@ QR code could be displayed in terminal using # and SPACEs.
 Zig-zag pattern for generating the QR code is starting from bottom  right towards top and then to the left.  
 
 ## TODO:
-- [ ] Incorporate automated testing in the project
-- [ ] Incorporate automated PEP 8 enforcement (pylint)
-- [ ] Learn how the QR codes are created
-- [ ] Write the logic for creating QR codes (MVP) and display them in the console
+- [X] Incorporate automated testing in the project
+- [X] Incorporate automated PEP 8 enforcement (pylint)
+- [X] Learn how the QR codes are created
+- [X] Write the logic for creating QR codes (MVP) and display them in the console
 - [ ] Prepare a GUI (web / desktop)
 
 ## Useful links:
