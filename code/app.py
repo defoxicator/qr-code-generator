@@ -168,8 +168,8 @@ class Layout:
         elif horizontal=='right':
             horizonal_insert:int=0
 
-        for (index, _) in enumerate(finding_pattern):
-            finding_pattern[index].insert(horizonal_insert, padding[0])
+        for (_, pattern) in enumerate(finding_pattern):
+            pattern.insert(horizonal_insert, padding[0])
 
         return finding_pattern
 
@@ -243,8 +243,8 @@ class Layout:
         '''
         combined=self.combine_qr_code_layout()
         qr_code:str=''
-        for (row, _) in enumerate(combined):
-            for column in combined[row]:
+        for (_, row) in enumerate(combined):
+            for column in row:
                 qr_code=qr_code+' '+column
             qr_code=qr_code+'\n'
 
