@@ -3,7 +3,7 @@ from collections import Counter
 
 class userInput:
     def __init__(self, text_input:str=None):
-        
+
         if text_input is None:
             self.text_input=input('Please insert text that should be\
 converted to QR Code (max 17 characters):\n> ')
@@ -40,11 +40,11 @@ converted to QR Code (max 17 characters):\n> ')
 
 class layout:
     def __init__(self, size:int=21):
-        self.size=size 
+        self.size=size
 
         # Size is depending on a QR Code version - for simplicity now I
         # will only use version 1 that is 21 x 21
-        
+
     # Function to check if argument is callable
     def is_callable(self, method_input):
         if callable(method_input):
@@ -53,19 +53,19 @@ class layout:
             structure=method_input
 
         return structure
-    
+
     def generate_boundaries(self):
         self.boundaries:list=[]
-        
+
         # Set boundaries for the code
         for col in range(self.size):
             self.row_boundaries:list=[]
 
             for row in range(self.size):
                 self.row_boundaries.append('@')
-                        
+
             self.boundaries.append(self.row_boundaries)
-        
+
         return self.boundaries
 
     # Prepare lists that will be used as timing pattern template
@@ -77,20 +77,20 @@ class layout:
                 self.row_timing.append('#')
             else:
                 self.row_timing.append(' ')
-        
+
         return self.row_timing
 
     # Combine timing patterns from template
     def draw_timing_pattern(self, method_input=generate_boundaries):
         pattern_template=self.timing_pattern()
-        
+
         # Check due to passing method as argument
         structure=self.is_callable(method_input=method_input)
-        
+
         # Drawing timing patterns using template
         for i in range(len(pattern_template)):
             structure[i][6]=pattern_template[i]
-        
+
         structure[6]=pattern_template
 
         return structure
@@ -105,12 +105,12 @@ class layout:
             ['#', ' ', '#', '#', '#', ' ', '#'],
             ['#', ' ', '#', '#', '#', ' ', '#'],
             ['#', ' ', '#', '#', '#', ' ', '#'],
-            ['#', ' ', ' ', ' ', ' ', ' ', '#'],            
+            ['#', ' ', ' ', ' ', ' ', ' ', '#'],
             ['#', '#', '#', '#', '#', '#', '#']
         ]
         padding:list=[' ', ' ', ' ', ' ', ' ', ' ', ' ']
 
-        # Vertical padding        
+        # Vertical padding
         if vertical=='top':
             vertical_insert:int=len(self.finding_pattern)
         elif vertical=='bottom':
@@ -128,7 +128,7 @@ class layout:
             self.finding_pattern[i].insert(horizonal_insert, padding[0])
 
         return self.finding_pattern
-    
+
     # Combine finding patterns
     def draw_finding_pattern(self, method_input=generate_boundaries):
         top_left=self.one_finding_pattern(vertical='top', horizontal='left')
@@ -141,7 +141,7 @@ class layout:
 
         # Check due to passing method as argument
         structure=self.is_callable(method_input=method_input)
-            
+
         # Dictionary is used to prevent multiple for loop blocks
         for name, pattern in finding_patterns.items():
             for row in range(len(pattern)):
@@ -152,7 +152,7 @@ class layout:
                                     else column]=pattern[row][column]
 
         return structure
-    
+
     def draw_dummy_format_bits(self, method_input=generate_boundaries):
         # Check due to passing method as argument
         structure=self.is_callable(method_input=method_input)
@@ -163,11 +163,11 @@ class layout:
             else:
                 structure[8][i]=' '
                 structure[i][8]=' '
-        
+
         for i in range(9):
             structure[-i][8]=' '
             structure[8][-i]=' '
-        
+
         structure[-8][8]='#'
 
         return structure
@@ -194,7 +194,8 @@ class layout:
         return qr_code
 
 class qrCode(userInput):
-    def __init__(self, text_input:str=None, encoding_type:str='byte', size:int=21, ecc_level:str='low', masking_pattern:int=None):
+    def __init__(self, text_input:str=None, encoding_type:str='byte',
+                 size:int=21, ecc_level:str='low', masking_pattern:int=None):
         self.text_input=text_input
         super().__init__(text_input=self.text_input)
         self.encoding_type=encoding_type
@@ -235,10 +236,10 @@ class qrCode(userInput):
         character_count_binary:str=str(bin(self.character_count))[2:]
         while len(character_count_binary) < 8:
             character_count_binary='0'+character_count_binary
-        
+
         terminator:str='0000'
 
-        # Padding is alternating EC and 11 hexadecimals to fill out the 
+        # Padding is alternating EC and 11 hexadecimals to fill out the
         # QR Code if there is less than max characters.
         # 0xEC = 11101100
         # 0x11 = 00010001
@@ -299,12 +300,12 @@ class qrCode(userInput):
         hexadecimal_ecc=self.error_correction()
         # binary_ecc=[bin(x) for x in hexadecimal_ecc]
         binary_ecc=''
-        
+
         for i in hexadecimal_ecc:
             byte_size_binary=bin(int(i, 16))[2:]
             while len(byte_size_binary) < 8:
                 byte_size_binary='0'+byte_size_binary
-            
+
             binary_ecc+=byte_size_binary
 
         concat+=str(binary_ecc)
@@ -320,7 +321,7 @@ class qrCode(userInput):
                 'up': range(self.size-1, -1, -1),
                 'down': range(self.size)
             }
-            
+
             for row in directions[direction]:
                 if boundaries[row][column]=='@':
                     zig_zag.append((row, column))
@@ -333,7 +334,7 @@ class qrCode(userInput):
                 continue
             elif column<=6:
                 column=column-1
-            
+
             direction_pattern(column, direction)
 
             direction='down' if direction=='up' else 'up'
@@ -348,10 +349,10 @@ class qrCode(userInput):
 
         for (i,j) in zig_zag:
             drawing[i][j]=' ' if data[0]=='0' else '#'
-            data=data[1:] 
+            data=data[1:]
 
         return drawing
-    
+
     def masking_bool(self, i:int, j:int):
         # Masking patterns
         # i - horizontal
@@ -368,7 +369,7 @@ class qrCode(userInput):
         }
 
         return masking_patterns[self.masking_pattern]
-    
+
     # Get all mask templates under this function and apply every mask to
     # generated QR Code
     # Calculate which mask is most beneficial and select it
@@ -395,7 +396,7 @@ class qrCode(userInput):
                     masked_data[coordinates[0]][coordinates[1]]='#'
 
         return masked_data
-    
+
     # Leaving it as it works but will be covered with a table
     # # Add to the QR Code format bits:
     # # ECC Level, Masking, ECC for masking
@@ -422,7 +423,7 @@ class qrCode(userInput):
 
     #             generator=generator_polynominal+'0'*(len(concat)-len(generator_polynominal))
     #             concat=str(bin(int(concat, 2)^int(generator, 2)))[2:]
- 
+
     #         if len(concat)<10:
     #             while len(concat)<10:
     #                 concat='0'+concat
@@ -493,7 +494,7 @@ class qrCode(userInput):
         for column in range(len(structure[0])-1, -1, -1):
             if column > len(structure)-9:
                 structure[8][column]=top_right_format_bits[-1]
-                top_right_format_bits=top_right_format_bits[:-1]      
+                top_right_format_bits=top_right_format_bits[:-1]
 
         # Apply full length to top left
         for column in range(len(structure[0])):
@@ -527,7 +528,7 @@ class qrCode(userInput):
                     count+=1
                 else:
                     count=1
-                
+
                 last_cell=actual_cell
 
                 if count==5:
@@ -547,7 +548,7 @@ class qrCode(userInput):
                     count+=1
                 else:
                     count=1
-                
+
                 last_cell=actual_cell
 
                 if count==5:
@@ -574,7 +575,7 @@ class qrCode(userInput):
                     penalty_count+=3
 
         return penalty_count
-    
+
     def calculate_penalty_third(self, method_input=draw_format_bits):
         structure=self.is_callable(method_input=method_input)
 
@@ -599,7 +600,7 @@ class qrCode(userInput):
         for check in lists_to_check:
             if check==penalty_pattern_1:
                 penalty_count+=40
-            
+
             if check==penalty_pattern_2:
                 penalty_count+=40
 
@@ -668,6 +669,6 @@ class qrCode(userInput):
             qr_code=qr_code+'\n'     
 
         return qr_code
-    
+
 if __name__ == '__main__':
     print(qrCode().print_qr_code())
