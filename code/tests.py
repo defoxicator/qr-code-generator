@@ -234,7 +234,7 @@ class LayoutTest(unittest.TestCase):
 
 class TestQRCode(unittest.TestCase):
     def test_concatenate_data(self):
-        actual=app.QRCode(text_input='Hello, world! 123', ecc_level='low')._concatenate_data(encoding_type='byte')
+        actual=app.QRCode(text_input='Hello, world! 123', encoding_type='byte', ecc_level='low')._concatenate_data()
         expected:str='01000001000101001000011001010110110001101100011011110010110000100000011101110110111101110010011011000110010000100001001000000011000100110010001100110000'
 
         self.assertEqual(actual, expected)
